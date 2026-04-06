@@ -1,0 +1,12 @@
+pre-commit:
+  parallel: true
+  commands:
+    typecheck:
+      run: pnpm turbo run typecheck
+    lint:
+      run: pnpm biome check .
+
+commit-msg:
+  commands:
+    commitlint:
+      run: pnpm commitlint --edit {1}

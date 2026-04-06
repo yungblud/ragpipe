@@ -1,0 +1,44 @@
+{
+	"name": "ragpipe",
+	"version": "0.0.1",
+	"description": "Pluggable TypeScript RAG toolkit — defineConfig() one file, embed → search → generate.",
+	"type": "module",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.js",
+			"require": "./dist/index.cjs"
+		}
+	},
+	"main": "./dist/index.cjs",
+	"module": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"files": ["dist"],
+	"scripts": {
+		"build": "tsup",
+		"dev": "tsup --watch",
+		"typecheck": "tsc --noEmit",
+		"test": "vitest run",
+		"test:watch": "vitest",
+		"test:coverage": "vitest run --coverage"
+	},
+	"keywords": [
+		"rag",
+		"retrieval-augmented-generation",
+		"embeddings",
+		"vector-search",
+		"llm",
+		"ai",
+		"typescript",
+		"plugin"
+	],
+	"license": "MIT",
+	"devDependencies": {
+		"tsup": "^8.4.0",
+		"typescript": "^5.8.3",
+		"vitest": "^3.1.1"
+	},
+	"dependencies": {
+		"c12": "^2.0.4"
+	}
+}

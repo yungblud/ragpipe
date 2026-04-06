@@ -1,0 +1,14 @@
+node_modules/
+dist/
+.turbo/
+.pnpm-store/
+*.tsbuildinfo
+
+# Config files may contain API keys
+ragpipe.config.ts
+ragpipe.config.js
+
+# Environment
+.env
+.env.local
+.env.*.local
