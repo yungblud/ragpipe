@@ -1,37 +1,15 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-const mockEnd = vi.fn();
-const mockQuery = vi.fn((): Promise<unknown[]> => Promise.resolve([]));
+const mockRpc = vi.fn();
+const mockFrom = vi.fn();
 
-const mockPostgres = vi.fn(() => {
-	const handler = {
-		apply(
-			_target: unknown,
-			_thisArg: unknown,
-			args: [string | TemplateStringsArray, ...unknown[]],
-		) {
-			if (typeof args[0] === "string") {
-				return args[0];
-			}
-			return mockQuery();
-		},
-	};
+const mockCreateClient = vi.fn(() => ({
+	rpc: mockRpc,
+	from: mockFrom,
+}));
 
-	const sql = new Proxy(() => {}, handler) as unknown as ((
-		strings: TemplateStringsArray,
-		...values: unknown[]
-	) => Promise<unknown[]>) & {
-		end: typeof mockEnd;
-		(identifier: string): string;
-	};
-
-	Object.assign(sql, { end: mockEnd });
-
-	return sql;
-});
-
-vi.mock("postgres", () => ({
-	default: mockPostgres,
+vi.mock("@supabase/supabase-js", () => ({
+	createClient: mockCreateClient,
 }));
 
 describe("supabaseVectorStore", () => {
@@ -43,66 +21,128 @@ describe("supabaseVectorStore", () => {
 		vi.restoreAllMocks();
 	});
 
-	it("creates postgres connection with database URL", async () => {
+	it("creates Supabase client with URL and key", async () => {
 		const { supabaseVectorStore } = await import("../vector-store.js");
-		supabaseVectorStore({ databaseUrl: "postgres://localhost/test" });
-		expect(mockPostgres).toHaveBeenCalledWith("postgres://localhost/test");
+		supabaseVectorStore({
+			supabaseUrl: "https://abc.supabase.co",
+			supabaseKey: "test-key",
+		});
+		expect(mockCreateClient).toHaveBeenCalledWith(
+			"https://abc.supabase.co",
+			"test-key",
+		);
 	});
 
 	it("has correct name", async () => {
 		const { supabaseVectorStore } = await import("../vector-store.js");
 		const store = supabaseVectorStore({
-			databaseUrl: "postgres://localhost/test",
+			supabaseUrl: "https://abc.supabase.co",
+			supabaseKey: "test-key",
 		});
 		expect(store.name).toBe("supabase");
 	});
 
-	it("calls disconnect / sql.end()", async () => {
-		const { supabaseVectorStore } = await import("../vector-store.js");
-		const store = supabaseVectorStore({
-			databaseUrl: "postgres://localhost/test",
-		});
-		await store.disconnect?.();
-		expect(mockEnd).toHaveBeenCalledOnce();
-	});
-
-	it("returns search results", async () => {
-		const fakeResults = [{ source: "doc.md", content: "hello", score: 0.95 }];
-		mockQuery.mockResolvedValueOnce(fakeResults);
+	it("searches via rpc with default query name", async () => {
+		const fakeResults = [
+			{ source: "doc.md", content: "hello", similarity: 0.95 },
+		];
+		mockRpc.mockResolvedValueOnce({ data: fakeResults, error: null });
 
 		const { supabaseVectorStore } = await import("../vector-store.js");
 		const store = supabaseVectorStore({
-			databaseUrl: "postgres://localhost/test",
+			supabaseUrl: "https://abc.supabase.co",
+			supabaseKey: "test-key",
 		});
 
 		const results = await store.search([0.1, 0.2, 0.3], 5);
-		expect(results).toEqual(fakeResults);
-		expect(mockQuery).toHaveBeenCalled();
+
+		expect(mockRpc).toHaveBeenCalledWith("match_documents", {
+			query_embedding: [0.1, 0.2, 0.3],
+			match_count: 5,
+		});
+		expect(results).toEqual([
+			{ source: "doc.md", content: "hello", score: 0.95 },
+		]);
 	});
 
-	it("upserts documents", async () => {
-		mockQuery.mockResolvedValueOnce([]);
+	it("searches with custom query name", async () => {
+		mockRpc.mockResolvedValueOnce({ data: [], error: null });
 
 		const { supabaseVectorStore } = await import("../vector-store.js");
 		const store = supabaseVectorStore({
-			databaseUrl: "postgres://localhost/test",
+			supabaseUrl: "https://abc.supabase.co",
+			supabaseKey: "test-key",
+			queryName: "custom_match",
 		});
 
-		await expect(
-			store.upsert("doc.md", "hello", [0.1, 0.2]),
-		).resolves.toBeUndefined();
-		expect(mockQuery).toHaveBeenCalled();
+		await store.search([0.1], 3);
+		expect(mockRpc).toHaveBeenCalledWith("custom_match", {
+			query_embedding: [0.1],
+			match_count: 3,
+		});
 	});
 
-	it("clears table", async () => {
-		mockQuery.mockResolvedValueOnce([]);
+	it("throws on search error", async () => {
+		mockRpc.mockResolvedValueOnce({
+			data: null,
+			error: { message: "Function not found" },
+		});
 
 		const { supabaseVectorStore } = await import("../vector-store.js");
 		const store = supabaseVectorStore({
-			databaseUrl: "postgres://localhost/test",
+			supabaseUrl: "https://abc.supabase.co",
+			supabaseKey: "test-key",
+		});
+
+		await expect(store.search([0.1], 5)).rejects.toThrow(
+			"Supabase search error: Function not found",
+		);
+	});
+
+	it("upserts documents via from().upsert()", async () => {
+		const mockUpsert = vi.fn().mockResolvedValueOnce({ error: null });
+		mockFrom.mockReturnValueOnce({ upsert: mockUpsert });
+
+		const { supabaseVectorStore } = await import("../vector-store.js");
+		const store = supabaseVectorStore({
+			supabaseUrl: "https://abc.supabase.co",
+			supabaseKey: "test-key",
+		});
+
+		await store.upsert("doc.md", "hello", [0.1, 0.2]);
+
+		expect(mockFrom).toHaveBeenCalledWith("documents");
+		expect(mockUpsert).toHaveBeenCalledWith(
+			{ source: "doc.md", content: "hello", vector: [0.1, 0.2] },
+			{ onConflict: "source,content" },
+		);
+	});
+
+	it("clears table via from().delete()", async () => {
+		const mockGte = vi.fn().mockResolvedValueOnce({ error: null });
+		const mockDelete = vi.fn().mockReturnValueOnce({ gte: mockGte });
+		mockFrom.mockReturnValueOnce({ delete: mockDelete });
+
+		const { supabaseVectorStore } = await import("../vector-store.js");
+		const store = supabaseVectorStore({
+			supabaseUrl: "https://abc.supabase.co",
+			supabaseKey: "test-key",
 		});
 
 		await store.clear?.();
-		expect(mockQuery).toHaveBeenCalled();
+
+		expect(mockFrom).toHaveBeenCalledWith("documents");
+		expect(mockDelete).toHaveBeenCalled();
+		expect(mockGte).toHaveBeenCalledWith("id", 0);
+	});
+
+	it("disconnect is a no-op", async () => {
+		const { supabaseVectorStore } = await import("../vector-store.js");
+		const store = supabaseVectorStore({
+			supabaseUrl: "https://abc.supabase.co",
+			supabaseKey: "test-key",
+		});
+
+		await expect(store.disconnect?.()).resolves.toBeUndefined();
 	});
 });

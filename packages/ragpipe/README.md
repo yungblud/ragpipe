@@ -52,7 +52,8 @@ export default defineConfig({
     apiKey: process.env.GEMINI_API_KEY ?? "",
   }),
   vectorStore: supabaseVectorStore({
-    databaseUrl: process.env.DATABASE_URL ?? "",
+    supabaseUrl: process.env.SUPABASE_URL ?? "",
+    supabaseKey: process.env.SUPABASE_SERVICE_ROLE_KEY ?? "",
   }),
   generation: geminiGeneration({
     apiKey: process.env.GEMINI_API_KEY ?? "",

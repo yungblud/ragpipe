@@ -1,31 +1,43 @@
-import postgres from "postgres";
+import { type SupabaseClient, createClient } from "@supabase/supabase-js";
 import type { SearchResult, VectorStorePlugin } from "ragpipe";
 
 export interface SupabaseVectorStoreOptions {
-	databaseUrl: string;
+	supabaseUrl: string;
+	supabaseKey: string;
 	tableName?: string;
-	dimensions?: number;
+	queryName?: string;
 }
 
 export function supabaseVectorStore(
 	options: SupabaseVectorStoreOptions,
 ): VectorStorePlugin {
 	const table = options.tableName ?? "documents";
-	const sql = postgres(options.databaseUrl);
+	const queryName = options.queryName ?? "match_documents";
+	const supabase: SupabaseClient = createClient(
+		options.supabaseUrl,
+		options.supabaseKey,
+	);
 
 	return {
 		name: "supabase",
 
 		async search(vector: number[], topK: number): Promise<SearchResult[]> {
-			const vectorStr = `[${vector.join(",")}]`;
-			const results = await sql`
-				SELECT source, content,
-					1 - (vector <=> ${vectorStr}::vector) AS score
-				FROM ${sql(table)}
-				ORDER BY vector <=> ${vectorStr}::vector
-				LIMIT ${topK}
-			`;
-			return results as unknown as SearchResult[];
+			const { data, error } = await supabase.rpc(queryName, {
+				query_embedding: vector,
+				match_count: topK,
+			});
+
+			if (error) {
+				throw new Error(`Supabase search error: ${error.message}`);
+			}
+
+			return (data ?? []).map(
+				(row: { source: string; content: string; similarity: number }) => ({
+					source: row.source,
+					content: row.content,
+					score: row.similarity,
+				}),
+			);
 		},
 
 		async upsert(
@@ -33,23 +45,25 @@ export function supabaseVectorStore(
 			content: string,
 			vector: number[],
 		): Promise<void> {
-			const vectorStr = `[${vector.join(",")}]`;
-			await sql`
-				INSERT INTO ${sql(table)} (source, content, vector)
-				SELECT ${source}, ${content}, ${vectorStr}::vector
-				WHERE NOT EXISTS (
-					SELECT 1 FROM ${sql(table)}
-					WHERE source = ${source} AND content = ${content}
-				)
-			`;
+			const { error } = await supabase
+				.from(table)
+				.upsert({ source, content, vector }, { onConflict: "source,content" });
+
+			if (error) {
+				throw new Error(`Supabase upsert error: ${error.message}`);
+			}
 		},
 
 		async clear(): Promise<void> {
-			await sql`TRUNCATE TABLE ${sql(table)}`;
+			const { error } = await supabase.from(table).delete().gte("id", 0);
+
+			if (error) {
+				throw new Error(`Supabase clear error: ${error.message}`);
+			}
 		},
 
 		async disconnect(): Promise<void> {
-			await sql.end();
+			// Supabase JS client doesn't require explicit disconnection
 		},
 	};
 }

@@ -1,6 +1,6 @@
 # Example: Gemini + Supabase
 
-Default ragpipe example using Google Gemini for embedding/generation and Supabase (pgvector) for vector storage.
+Default ragpipe example using Google Gemini for embedding/generation and Supabase for vector storage.
 
 ## Prerequisites
 
@@ -13,10 +13,11 @@ Default ragpipe example using Google Gemini for embedding/generation and Supabas
 
 ```bash
 GEMINI_API_KEY=your-gemini-api-key
-DATABASE_URL=postgres://user:pass@host:5432/dbname
+SUPABASE_URL=https://your-project.supabase.co
+SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
 ```
 
-2. Create the documents table in Supabase:
+2. Run the following SQL in the Supabase SQL editor:
 
 ```sql
 CREATE EXTENSION IF NOT EXISTS vector;
@@ -25,10 +26,36 @@ CREATE TABLE documents (
   id BIGSERIAL PRIMARY KEY,
   source TEXT NOT NULL,
   content TEXT NOT NULL,
-  vector VECTOR(3072)
+  vector VECTOR(3072),
+  UNIQUE(source, content)
 );
 
-CREATE INDEX ON documents USING ivfflat (vector vector_cosine_ops) WITH (lists = 100);
+CREATE OR REPLACE FUNCTION match_documents(
+  query_embedding VECTOR(3072),
+  match_count INT DEFAULT 5
+)
+RETURNS TABLE (
+  source TEXT,
+  content TEXT,
+  similarity FLOAT
+)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+  RETURN QUERY
+  SELECT
+    d.source,
+    d.content,
+    1 - (d.vector <=> query_embedding) AS similarity
+  FROM documents d
+  ORDER BY d.vector <=> query_embedding
+  LIMIT match_count;
+END;
+$$;
+
+CREATE INDEX ON documents
+  USING ivfflat (vector vector_cosine_ops)
+  WITH (lists = 100);
 ```
 
 3. Install dependencies:

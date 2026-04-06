@@ -66,7 +66,7 @@ export default defineConfig({
 		apiKey: process.env.${embedding.value === "gemini" ? "GEMINI_API_KEY" : "API_KEY"}!,
 	}),
 	vectorStore: ${vectorStore.importName}({
-		${vectorStore.value === "supabase" ? "databaseUrl: process.env.DATABASE_URL!," : ""}
+		${vectorStore.value === "supabase" ? "supabaseUrl: process.env.SUPABASE_URL!,\n\t\tsupabaseKey: process.env.SUPABASE_SERVICE_ROLE_KEY!," : ""}
 	}),
 	generation: ${generation.importName}({
 		apiKey: process.env.${generation.value === "gemini" ? "GEMINI_API_KEY" : "API_KEY"}!,

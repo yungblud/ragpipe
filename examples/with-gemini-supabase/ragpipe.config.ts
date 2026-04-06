@@ -8,9 +8,9 @@ export default defineConfig({
 		model: "gemini-embedding-001",
 	}),
 	vectorStore: supabaseVectorStore({
-		databaseUrl: process.env.DATABASE_URL ?? "",
+		supabaseUrl: process.env.SUPABASE_URL ?? "",
+		supabaseKey: process.env.SUPABASE_SERVICE_ROLE_KEY ?? "",
 		tableName: "documents",
-		dimensions: 3072,
 	}),
 	generation: geminiGeneration({
 		apiKey: process.env.GEMINI_API_KEY ?? "",
