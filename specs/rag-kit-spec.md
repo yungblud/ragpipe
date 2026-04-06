@@ -535,13 +535,13 @@ Core philosophy:
 
 ### Phase 0 — Repository Init (1 day)
 
-- [ ] Monorepo setup (pnpm workspace + turborepo)
-- [ ] Core package scaffolding (`ragpipe`)
-- [ ] `types.ts` — finalize plugin interfaces
-- [ ] `config.ts` — `defineConfig()` + `loadConfig()`
-- [ ] `pipeline.ts` — `createPipeline()`
-- [ ] `chunker.ts` — built-in chunker (paragraph-based, size-limited)
-- [ ] `rate-limiter.ts` — generic rate-limited embedder
+- [x] Monorepo setup (pnpm workspace + turborepo)
+- [x] Core package scaffolding (`ragpipe`)
+- [x] `types.ts` — finalize plugin interfaces
+- [x] `config.ts` — `defineConfig()` + `loadConfig()`
+- [x] `pipeline.ts` — `createPipeline()`
+- [x] `chunker.ts` — built-in chunker (paragraph-based, size-limited)
+- [x] `rate-limiter.ts` — generic rate-limited embedder
 
 ### Phase 1 — First 3 Plugins (2–3 days)
 
