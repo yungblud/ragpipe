@@ -12,6 +12,8 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^1.9.4",
+		"@commitlint/cli": "^20.5.0",
+		"@commitlint/config-conventional": "^20.5.0",
 		"lefthook": "^2.1.4",
 		"turbo": "^2.4.4",
 		"typescript": "^5.8.3"

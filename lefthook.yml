@@ -5,3 +5,8 @@ pre-commit:
       run: pnpm turbo run typecheck
     lint:
       run: pnpm biome check .
+
+commit-msg:
+  commands:
+    commitlint:
+      run: pnpm commitlint --edit {1}
