@@ -60,7 +60,7 @@ describe("createRateLimitedEmbedder", () => {
 		const plugin = createMockEmbedding({ embedMany });
 		const limiter = createRateLimitedEmbedder(plugin, 0);
 
-		const results = await limiter.embedMany!(["a", "b"]);
+		const results = await limiter.embedMany?.(["a", "b"]);
 
 		expect(embedMany).toHaveBeenCalledWith(["a", "b"]);
 		expect(results).toEqual([[1], [2]]);
@@ -71,7 +71,7 @@ describe("createRateLimitedEmbedder", () => {
 		const plugin = createMockEmbedding({ embed, embedMany: undefined });
 		const limiter = createRateLimitedEmbedder(plugin, 0);
 
-		const results = await limiter.embedMany!(["x", "y", "z"]);
+		const results = await limiter.embedMany?.(["x", "y", "z"]);
 
 		expect(embed).toHaveBeenCalledTimes(3);
 		expect(results).toEqual([

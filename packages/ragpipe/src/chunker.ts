@@ -12,9 +12,7 @@ export interface DefaultChunkerOptions {
  * Splits text into chunks by paragraph boundaries, respecting a max character size.
  * Adjacent chunks overlap by `overlap` characters to preserve context at boundaries.
  */
-export function defaultChunker(
-	options?: DefaultChunkerOptions,
-): ChunkerPlugin {
+export function defaultChunker(options?: DefaultChunkerOptions): ChunkerPlugin {
 	const chunkSize = options?.chunkSize ?? DEFAULT_CHUNK_SIZE;
 	const overlap = options?.overlap ?? DEFAULT_OVERLAP;
 
