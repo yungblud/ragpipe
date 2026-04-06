@@ -33,11 +33,63 @@ importers:
         specifier: ^5.8.3
         version: 5.9.3
 
+  examples/with-gemini-supabase:
+    dependencies:
+      '@ragpipe/plugin-gemini':
+        specifier: workspace:*
+        version: link:../../packages/plugin-gemini
+      '@ragpipe/plugin-supabase':
+        specifier: workspace:*
+        version: link:../../packages/plugin-supabase
+      ragpipe:
+        specifier: workspace:*
+        version: link:../../packages/ragpipe
+
+  packages/plugin-gemini:
+    devDependencies:
+      ragpipe:
+        specifier: workspace:*
+        version: link:../ragpipe
+      tsup:
+        specifier: ^8.4.0
+        version: 8.5.1(jiti@2.6.1)(postcss@8.5.8)(typescript@5.9.3)
+      typescript:
+        specifier: ^5.8.3
+        version: 5.9.3
+      vitest:
+        specifier: ^3.1.1
+        version: 3.2.4(@types/node@25.5.2)(jiti@2.6.1)
+
+  packages/plugin-supabase:
+    dependencies:
+      postgres:
+        specifier: ^3.4.5
+        version: 3.4.9
+    devDependencies:
+      ragpipe:
+        specifier: workspace:*
+        version: link:../ragpipe
+      tsup:
+        specifier: ^8.4.0
+        version: 8.5.1(jiti@2.6.1)(postcss@8.5.8)(typescript@5.9.3)
+      typescript:
+        specifier: ^5.8.3
+        version: 5.9.3
+      vitest:
+        specifier: ^3.1.1
+        version: 3.2.4(@types/node@25.5.2)(jiti@2.6.1)
+
   packages/ragpipe:
     dependencies:
       c12:
         specifier: ^2.0.4
         version: 2.0.4
+      citty:
+        specifier: ^0.1.6
+        version: 0.1.6
+      consola:
+        specifier: ^3.4.0
+        version: 3.4.2
     devDependencies:
       tsup:
         specifier: ^8.4.0
@@ -1331,6 +1383,10 @@ packages:
   postcss@8.5.8:
     resolution: {integrity: sha512-OW/rX8O/jXnm82Ey1k44pObPtdblfiuWnrd8X7GJ7emImCOstunGbXUpp7HdBrFQX6rJzn3sPT397Wp5aCwCHg==}
     engines: {node: ^10 || ^12 || >=14}
+
+  postgres@3.4.9:
+    resolution: {integrity: sha512-GD3qdB0x1z9xgFI6cdRD6xu2Sp2WCOEoe3mtnyB5Ee0XrrL5Pe+e4CCnJrRMnL1zYtRDZmQQVbvOttLnKDLnaw==}
+    engines: {node: '>=12'}
 
   prettier@2.8.8:
     resolution: {integrity: sha512-tdN8qQGvNjw4CHbY+XXk0JgCXn9QiF21a55rBe5LJAU+kDyC4WQn4+awm2Xfk2lQMk5fKup9XgzTZtGkjBdP9Q==}
@@ -2851,6 +2907,8 @@ snapshots:
       nanoid: 3.3.11
       picocolors: 1.1.1
       source-map-js: 1.2.1
+
+  postgres@3.4.9: {}
 
   prettier@2.8.8: {}
 
