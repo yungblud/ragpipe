@@ -47,7 +47,7 @@ jobs:
         with:
           title: "chore: version packages"
           commit: "chore: version packages"
-          version: pnpm changeset version
+          version: pnpm changeset version && pnpm biome check --write .
           publish: pnpm changeset publish
           createGithubReleases: true
         env:
