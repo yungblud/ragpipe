@@ -548,10 +548,10 @@ Core philosophy:
 
 MVP with the minimum viable combination:
 
-- [ ] `@ragpipe/plugin-gemini` — embedding + generation
-- [ ] `@ragpipe/plugin-supabase` — vectorStore
-- [ ] Core CLI (`init`, `ingest`, `ask`)
-- [ ] `examples/with-gemini-supabase/` — default example
+- [x] `@ragpipe/plugin-gemini` — embedding + generation
+- [x] `@ragpipe/plugin-supabase` — vectorStore
+- [x] Core CLI (`init`, `ingest`, `ask`)
+- [x] `examples/with-gemini-supabase/` — default example
 
 At the end of Phase 1, the following should work:
 
@@ -573,10 +573,10 @@ npx ragpipe ask "query"   # → return answer
 
 ### Phase 3 — Advanced Features (2–4 weeks)
 
-- [ ] Streaming responses (`generateStream`)
-- [ ] Batch embeddings (`embedMany`) — automatic rate limit handling
+- [x] Streaming responses (`generateStream`)
+- [x] Batch embeddings (`embedMany`) — automatic rate limit handling
 - [ ] Documentation site (Fumadocs or Starlight)
-- [ ] GitHub Actions CI/CD + automated npm publishing
+- [x] GitHub Actions CI/CD + automated npm publishing
 - [ ] `ragpipe dev` — local web UI for ingest/search testing
 - [ ] Custom chunker plugin support (Markdown header-based, code block-aware, etc.)
 
