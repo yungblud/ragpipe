@@ -1,6 +1,6 @@
 {
 	"name": "@ragpipe/plugin-supabase",
-	"version": "0.1.0-alpha.1",
+	"version": "0.1.0",
 	"description": "Supabase pgvector vector store plugin for ragpipe",
 	"type": "module",
 	"license": "MIT",
@@ -30,7 +30,11 @@
 	"main": "./dist/index.cjs",
 	"module": "./dist/index.js",
 	"types": "./dist/index.d.ts",
-	"files": ["dist", "sql", "README.md"],
+	"files": [
+		"dist",
+		"sql",
+		"README.md"
+	],
 	"scripts": {
 		"build": "tsup",
 		"dev": "tsup --watch",
@@ -48,7 +52,7 @@
 		"plugin"
 	],
 	"peerDependencies": {
-		"ragpipe": ">=0.0.1"
+		"ragpipe": ">=0.1.0"
 	},
 	"dependencies": {
 		"@supabase/supabase-js": "^2.49.4"
