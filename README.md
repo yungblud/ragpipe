@@ -42,7 +42,8 @@ export default defineConfig({
     model: "gemini-embedding-001",
   }),
   vectorStore: supabaseVectorStore({
-    databaseUrl: process.env.DATABASE_URL!,
+    supabaseUrl: process.env.SUPABASE_URL!,
+    supabaseKey: process.env.SUPABASE_SERVICE_ROLE_KEY!,
     tableName: "documents",
   }),
   generation: geminiGeneration({
@@ -69,7 +70,8 @@ export default defineConfig({
     model: "voyage-3-lite",
   }),
   vectorStore: supabaseVectorStore({
-    databaseUrl: process.env.DATABASE_URL!,
+    supabaseUrl: process.env.SUPABASE_URL!,
+    supabaseKey: process.env.SUPABASE_SERVICE_ROLE_KEY!,
   }),
   generation: bedrockGeneration({
     region: "us-east-1",

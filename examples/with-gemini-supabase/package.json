@@ -1,0 +1,15 @@
+{
+	"name": "@ragpipe/example-gemini-supabase",
+	"version": "0.0.0",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"ingest": "ragpipe ingest ./docs",
+		"ask": "ragpipe ask"
+	},
+	"dependencies": {
+		"ragpipe": "workspace:*",
+		"@ragpipe/plugin-gemini": "workspace:*",
+		"@ragpipe/plugin-supabase": "workspace:*"
+	}
+}
