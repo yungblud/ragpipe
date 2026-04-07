@@ -650,3 +650,7 @@ and extracting interfaces + splitting packages creates a framework anyone can us
 
 Start with a single Gemini + Supabase combination,
 then add plugins in validated order (Ollama → Voyage → Bedrock → OpenAI).
+
+### 14. References
+- https://jibinary.tistory.com/entry/Amazon-Bedrock%EB%9E%80#google_vignette
+- https://aws.amazon.com/ko/bedrock/
