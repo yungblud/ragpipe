@@ -12,3 +12,5 @@ ragpipe.config.js
 .env
 .env.local
 .env.*.local
+
+.omc/

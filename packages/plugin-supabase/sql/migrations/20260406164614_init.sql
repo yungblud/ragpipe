@@ -35,8 +35,3 @@ BEGIN
   LIMIT match_count;
 END;
 $$;
-
--- 4. Create an index for faster search
-CREATE INDEX ON documents
-  USING ivfflat (vector vector_cosine_ops)
-  WITH (lists = 100);
