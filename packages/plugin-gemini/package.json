@@ -18,6 +18,7 @@
 	},
 	"homepage": "https://github.com/yungblud/ragpipe#readme",
 	"publishConfig": {
+		"registry": "https://registry.npmjs.org/",
 		"access": "public"
 	},
 	"exports": {

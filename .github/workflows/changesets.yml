@@ -28,6 +28,14 @@ jobs:
           node-version: 22
           cache: pnpm
 
+      - name: Ensure npm supports trusted publishing
+        shell: bash
+        run: |
+          npm install -g npm@^11.5.1
+          node -v
+          npm -v
+          pnpm -v
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
@@ -40,7 +48,7 @@ jobs:
           title: "chore: version packages"
           commit: "chore: version packages"
           version: pnpm changeset version
-          publish: pnpm changeset publish --provenance
+          publish: pnpm changeset publish
           createGithubReleases: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
