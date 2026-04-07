@@ -30,11 +30,7 @@
 	"main": "./dist/index.cjs",
 	"module": "./dist/index.js",
 	"types": "./dist/index.d.ts",
-	"files": [
-		"dist",
-		"sql",
-		"README.md"
-	],
+	"files": ["dist", "sql", "README.md"],
 	"scripts": {
 		"build": "tsup",
 		"dev": "tsup --watch",
