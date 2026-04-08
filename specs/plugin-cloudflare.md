@@ -169,11 +169,11 @@ packages/plugin-cloudflare/
 - [x] `src/index.ts` 엔트리 포인트
 
 ### Step 2 — Embedding 구현
-- [ ] `CloudflareEmbeddingOptions` 타입 정의
-- [ ] `cloudflareEmbedding()` 팩토리 함수
-- [ ] `embed()` — 단일 텍스트 임베딩
-- [ ] `embedMany()` — 배열 입력 배치 처리
-- [ ] 에러 핸들링 (`success: false` 응답 처리)
+- [x] `CloudflareEmbeddingOptions` 타입 정의
+- [x] `cloudflareEmbedding()` 팩토리 함수
+- [x] `embed()` — 단일 텍스트 임베딩
+- [x] `embedMany()` — 배열 입력 배치 처리
+- [x] 에러 핸들링 (`success: false` 응답 처리)
 
 ### Step 3 — Generation 구현
 - [ ] `CloudflareGenerationOptions` 타입 정의
