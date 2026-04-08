@@ -17,6 +17,12 @@ const EMBEDDING_PROVIDERS: ProviderOption[] = [
 		package: "@ragpipe/plugin-gemini",
 		importName: "geminiEmbedding",
 	},
+	{
+		label: "Cloudflare Workers AI",
+		value: "cloudflare",
+		package: "@ragpipe/plugin-cloudflare",
+		importName: "cloudflareEmbedding",
+	},
 ];
 
 const VECTORSTORE_PROVIDERS: ProviderOption[] = [
@@ -34,6 +40,12 @@ const GENERATION_PROVIDERS: ProviderOption[] = [
 		value: "gemini",
 		package: "@ragpipe/plugin-gemini",
 		importName: "geminiGeneration",
+	},
+	{
+		label: "Cloudflare Workers AI",
+		value: "cloudflare",
+		package: "@ragpipe/plugin-cloudflare",
+		importName: "cloudflareGeneration",
 	},
 ];
 
@@ -59,17 +71,30 @@ function generateConfig(
 		),
 	].join("\n");
 
+	function providerConfig(p: ProviderOption): string {
+		if (p.value === "cloudflare") {
+			return "accountId: process.env.CLOUDFLARE_ACCOUNT_ID!,\n\t\tapiToken: process.env.CLOUDFLARE_API_TOKEN!,";
+		}
+		if (p.value === "supabase") {
+			return "supabaseUrl: process.env.SUPABASE_URL!,\n\t\tsupabaseKey: process.env.SUPABASE_SERVICE_ROLE_KEY!,";
+		}
+		if (p.value === "gemini") {
+			return "apiKey: process.env.GEMINI_API_KEY!,";
+		}
+		return "apiKey: process.env.API_KEY!,";
+	}
+
 	return `${importLines}
 
 export default defineConfig({
 	embedding: ${embedding.importName}({
-		apiKey: process.env.${embedding.value === "gemini" ? "GEMINI_API_KEY" : "API_KEY"}!,
+		${providerConfig(embedding)}
 	}),
 	vectorStore: ${vectorStore.importName}({
-		${vectorStore.value === "supabase" ? "supabaseUrl: process.env.SUPABASE_URL!,\n\t\tsupabaseKey: process.env.SUPABASE_SERVICE_ROLE_KEY!," : ""}
+		${providerConfig(vectorStore)}
 	}),
 	generation: ${generation.importName}({
-		apiKey: process.env.${generation.value === "gemini" ? "GEMINI_API_KEY" : "API_KEY"}!,
+		${providerConfig(generation)}
 	}),
 });
 `;
