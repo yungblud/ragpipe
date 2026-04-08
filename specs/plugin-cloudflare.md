@@ -176,11 +176,11 @@ packages/plugin-cloudflare/
 - [x] 에러 핸들링 (`success: false` 응답 처리)
 
 ### Step 3 — Generation 구현
-- [ ] `CloudflareGenerationOptions` 타입 정의
-- [ ] `cloudflareGeneration()` 팩토리 함수
-- [ ] `generate()` — 동기 응답
-- [ ] `generateStream()` — SSE 파싱 + AsyncIterable
-- [ ] system prompt, history 지원
+- [x] `CloudflareGenerationOptions` 타입 정의
+- [x] `cloudflareGeneration()` 팩토리 함수
+- [x] `generate()` — 동기 응답
+- [x] `generateStream()` — SSE 파싱 + AsyncIterable
+- [x] system prompt, history 지원
 
 ### Step 4 — 빌드/테스트 검증
 - [ ] `pnpm turbo run build` 통과
