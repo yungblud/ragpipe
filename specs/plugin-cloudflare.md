@@ -164,9 +164,9 @@ packages/plugin-cloudflare/
 ## 6. 구현 단계
 
 ### Step 1 — 패키지 스캐폴딩
-- [ ] `packages/plugin-cloudflare/` 생성
-- [ ] `package.json`, `tsconfig.json`, `tsup.config.ts` 설정
-- [ ] `src/index.ts` 엔트리 포인트
+- [x] `packages/plugin-cloudflare/` 생성
+- [x] `package.json`, `tsconfig.json`, `tsup.config.ts` 설정
+- [x] `src/index.ts` 엔트리 포인트
 
 ### Step 2 — Embedding 구현
 - [ ] `CloudflareEmbeddingOptions` 타입 정의
