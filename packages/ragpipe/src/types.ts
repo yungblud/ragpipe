@@ -17,10 +17,10 @@ export interface AskResult {
 export interface EmbeddingPlugin {
 	readonly name: string;
 	readonly dimensions: number;
+	readonly model: string;
 	embed(text: string): Promise<number[]>;
 	embedMany?(texts: string[]): Promise<number[][]>;
 	rateLimit?: { delayMs: number };
-	model: string;
 }
 
 export interface VectorStorePlugin {
@@ -33,6 +33,7 @@ export interface VectorStorePlugin {
 
 export interface GenerationPlugin {
 	readonly name: string;
+	readonly model: string;
 	generate(
 		question: string,
 		context: string,

@@ -12,10 +12,14 @@ afterEach(() => {
 });
 
 describe("geminiGeneration", () => {
-	const plugin = geminiGeneration({ apiKey: "test-key" });
+	const plugin = geminiGeneration({
+		apiKey: "test-key",
+		model: "gemini-2.5-flash",
+	});
 
 	it("has correct metadata", () => {
 		expect(plugin.name).toBe("gemini");
+		expect(plugin.model).toBe("gemini-2.5-flash");
 	});
 
 	it("generates text via Gemini API", async () => {

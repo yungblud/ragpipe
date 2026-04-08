@@ -3,7 +3,7 @@ import type { GenerationPlugin } from "ragpipe";
 export interface CloudflareGenerationOptions {
 	accountId: string;
 	apiToken: string;
-	model?: string;
+	model: string;
 	systemPrompt?: string;
 }
 
@@ -17,12 +17,10 @@ interface CloudflareResponse {
 	success: boolean;
 }
 
-const DEFAULT_MODEL = "@cf/meta/llama-3.1-8b-instruct";
-
 export function cloudflareGeneration(
 	options: CloudflareGenerationOptions,
 ): GenerationPlugin {
-	const model = options.model ?? DEFAULT_MODEL;
+	const { model } = options;
 	const baseUrl = `https://api.cloudflare.com/client/v4/accounts/${options.accountId}/ai/run/${model}`;
 
 	function buildMessages(
@@ -48,6 +46,7 @@ export function cloudflareGeneration(
 
 	return {
 		name: "cloudflare",
+		model,
 
 		async generate(question, context, opts) {
 			const messages = buildMessages(question, context, opts);

@@ -49,6 +49,7 @@ export function createMockGeneration(
 ): GenerationPlugin {
 	return {
 		name: "mock-generation",
+		model: "mock-model",
 		async generate(question: string, _context: string) {
 			return `Answer to: ${question}`;
 		},

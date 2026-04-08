@@ -2,7 +2,7 @@ import type { GenerationPlugin } from "ragpipe";
 
 export interface GeminiGenerationOptions {
 	apiKey: string;
-	model?: string;
+	model: string;
 	systemPrompt?: string;
 }
 
@@ -17,7 +17,7 @@ interface GeminiResponse {
 export function geminiGeneration(
 	options: GeminiGenerationOptions,
 ): GenerationPlugin {
-	const model = options.model ?? "gemini-2.5-flash";
+	const { model } = options;
 
 	function buildBody(
 		question: string,
@@ -42,6 +42,7 @@ export function geminiGeneration(
 
 	return {
 		name: "gemini",
+		model,
 
 		async generate(question, context, opts) {
 			const body = buildBody(question, context, opts);

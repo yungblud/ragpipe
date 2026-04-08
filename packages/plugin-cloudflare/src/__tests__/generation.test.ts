@@ -15,10 +15,12 @@ describe("cloudflareGeneration", () => {
 	const plugin = cloudflareGeneration({
 		accountId: "test-account",
 		apiToken: "test-token",
+		model: "@cf/meta/llama-3.1-8b-instruct",
 	});
 
 	it("has correct metadata", () => {
 		expect(plugin.name).toBe("cloudflare");
+		expect(plugin.model).toBe("@cf/meta/llama-3.1-8b-instruct");
 	});
 
 	it("generates text via Cloudflare API", async () => {

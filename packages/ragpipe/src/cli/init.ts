@@ -93,12 +93,18 @@ function generateConfig(
 			lines.push("apiKey: process.env.API_KEY!,");
 		}
 
-		if (role === "embedding") {
-			const modelDefaults: Record<string, string> = {
-				gemini: "gemini-3.1-flash-lite-preview",
-				cloudflare: "@cf/qwen/qwen3-embedding-0.6b",
+		if (role === "embedding" || role === "generation") {
+			const modelDefaults: Record<string, Record<string, string>> = {
+				embedding: {
+					gemini: "gemini-embedding-001",
+					cloudflare: "@cf/qwen/qwen3-embedding-0.6b",
+				},
+				generation: {
+					gemini: "gemini-3.1-flash-lite-preview",
+					cloudflare: "@cf/openai/gpt-oss-20b",
+				},
 			};
-			const model = modelDefaults[p.value];
+			const model = modelDefaults[role]?.[p.value];
 			if (model) {
 				lines.push(`model: "${model}",`);
 			}
