@@ -17,7 +17,7 @@ interface CloudflareResponse {
 	success: boolean;
 }
 
-const DEFAULT_MODEL = "@cf/qwen/qwen3-embedding-0.6b";
+const DEFAULT_MODEL = "@cf/meta/llama-3.1-8b-instruct";
 
 export function cloudflareGeneration(
 	options: CloudflareGenerationOptions,
