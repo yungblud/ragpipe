@@ -15,6 +15,7 @@ export function createMockEmbedding(
 		async embed(_text: string) {
 			return [0.1, 0.2, 0.3];
 		},
+		model: "mock-model",
 		...overrides,
 	};
 }

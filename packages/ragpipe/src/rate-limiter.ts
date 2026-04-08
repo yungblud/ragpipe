@@ -29,6 +29,7 @@ export function createRateLimitedEmbedder(
 		name: plugin.name,
 		dimensions: plugin.dimensions,
 		rateLimit: plugin.rateLimit,
+		model: plugin.model,
 
 		async embed(text: string): Promise<number[]> {
 			await throttle();

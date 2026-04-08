@@ -71,30 +71,53 @@ function generateConfig(
 		),
 	].join("\n");
 
-	function providerConfig(p: ProviderOption): string {
+	function providerConfig(
+		p: ProviderOption,
+		role: "embedding" | "vectorStore" | "generation",
+	): string {
+		const lines: string[] = [];
+
 		if (p.value === "cloudflare") {
-			return "accountId: process.env.CLOUDFLARE_ACCOUNT_ID!,\n\t\tapiToken: process.env.CLOUDFLARE_API_TOKEN!,";
+			lines.push(
+				"accountId: process.env.CLOUDFLARE_ACCOUNT_ID!,",
+				"apiToken: process.env.CLOUDFLARE_API_TOKEN!,",
+			);
+		} else if (p.value === "supabase") {
+			lines.push(
+				"supabaseUrl: process.env.SUPABASE_URL!,",
+				"supabaseKey: process.env.SUPABASE_SERVICE_ROLE_KEY!,",
+			);
+		} else if (p.value === "gemini") {
+			lines.push("apiKey: process.env.GEMINI_API_KEY!,");
+		} else {
+			lines.push("apiKey: process.env.API_KEY!,");
 		}
-		if (p.value === "supabase") {
-			return "supabaseUrl: process.env.SUPABASE_URL!,\n\t\tsupabaseKey: process.env.SUPABASE_SERVICE_ROLE_KEY!,";
+
+		if (role === "embedding") {
+			const modelDefaults: Record<string, string> = {
+				gemini: "gemini-3.1-flash-lite-preview",
+				cloudflare: "@cf/qwen/qwen3-embedding-0.6b",
+			};
+			const model = modelDefaults[p.value];
+			if (model) {
+				lines.push(`model: "${model}",`);
+			}
 		}
-		if (p.value === "gemini") {
-			return "apiKey: process.env.GEMINI_API_KEY!,";
-		}
-		return "apiKey: process.env.API_KEY!,";
+
+		return lines.join("\n\t\t");
 	}
 
 	return `${importLines}
 
 export default defineConfig({
 	embedding: ${embedding.importName}({
-		${providerConfig(embedding)}
+		${providerConfig(embedding, "embedding")}
 	}),
 	vectorStore: ${vectorStore.importName}({
-		${providerConfig(vectorStore)}
+		${providerConfig(vectorStore, "vectorStore")}
 	}),
 	generation: ${generation.importName}({
-		${providerConfig(generation)}
+		${providerConfig(generation, "generation")}
 	}),
 });
 `;

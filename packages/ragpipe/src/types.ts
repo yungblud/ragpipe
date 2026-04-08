@@ -20,6 +20,7 @@ export interface EmbeddingPlugin {
 	embed(text: string): Promise<number[]>;
 	embedMany?(texts: string[]): Promise<number[][]>;
 	rateLimit?: { delayMs: number };
+	model: string;
 }
 
 export interface VectorStorePlugin {

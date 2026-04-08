@@ -12,12 +12,16 @@ afterEach(() => {
 });
 
 describe("geminiEmbedding", () => {
-	const plugin = geminiEmbedding({ apiKey: "test-key" });
+	const plugin = geminiEmbedding({
+		apiKey: "test-key",
+		model: "gemini-embedding-001",
+	});
 
 	it("has correct metadata", () => {
 		expect(plugin.name).toBe("gemini");
 		expect(plugin.dimensions).toBe(3072);
 		expect(plugin.rateLimit).toEqual({ delayMs: 800 });
+		expect(plugin.model).toEqual("gemini-embedding-001");
 	});
 
 	it("embeds text via Gemini API", async () => {
