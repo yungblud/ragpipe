@@ -1,5 +1,11 @@
 # @ragpipe/plugin-supabase
 
+## 0.4.0
+
+### Minor Changes
+
+- [`c961cba`](https://github.com/yungblud/ragpipe/commit/c961cba7a8d5eedb118b228ec63987f0aa6322ca) Thanks [@yungblud](https://github.com/yungblud)! - fixed setup force recreation issue
+
 ## 0.3.0
 
 ### Minor Changes
