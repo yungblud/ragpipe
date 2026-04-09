@@ -1,5 +1,13 @@
 # @ragpipe/plugin-supabase
 
+## 0.3.0
+
+### Minor Changes
+
+- [`bc7c4ea`](https://github.com/yungblud/ragpipe/commit/bc7c4eadd11cbaeb260e95768211e401fa39f6f5) Thanks [@yungblud](https://github.com/yungblud)! - - sql.ts: content_hash TEXT GENERATED ALWAYS AS (md5(content)) STORED 컬럼 추가. unique 제약을 UNIQUE(source, content) →
+  UNIQUE(source, content_hash)로 변경
+  - vector-store.ts: upsert의 onConflict를 "source,content_hash"로 변경
+
 ## 0.2.0
 
 ### Minor Changes
