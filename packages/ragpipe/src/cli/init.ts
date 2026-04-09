@@ -110,6 +110,17 @@ function generateConfig(
 			}
 		}
 
+		if (role === "embedding") {
+			const dimensionDefaults: Record<string, number> = {
+				gemini: 3072,
+				cloudflare: 768,
+			};
+			const dims = dimensionDefaults[p.value];
+			if (dims) {
+				lines.push(`dimensions: ${dims},`);
+			}
+		}
+
 		return lines.join("\n\t\t");
 	}
 
@@ -182,9 +193,19 @@ export const initCommand = defineCommand({
 			packages.add(p.package);
 		}
 
+		const pkgList = Array.from(packages).join(" ");
+
 		consola.info(
 			`Required packages: ragpipe, ${Array.from(packages).join(", ")}`,
 		);
-		consola.info(`Run: pnpm add ragpipe ${Array.from(packages).join(" ")}`);
+		consola.box(
+			[
+				"Next steps:",
+				`  1. pnpm add ragpipe ${pkgList}`,
+				"  2. npx ragpipe setup        # vector store schema",
+				"  3. npx ragpipe ingest ./docs",
+				'  4. npx ragpipe ask "your question"',
+			].join("\n"),
+		);
 	},
 });

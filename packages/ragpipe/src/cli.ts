@@ -2,6 +2,7 @@ import { defineCommand, runMain } from "citty";
 import { askCommand } from "./cli/ask.js";
 import { ingestCommand } from "./cli/ingest.js";
 import { initCommand } from "./cli/init.js";
+import { setupCommand } from "./cli/setup.js";
 
 const main = defineCommand({
 	meta: {
@@ -11,6 +12,7 @@ const main = defineCommand({
 	},
 	subCommands: {
 		init: initCommand,
+		setup: setupCommand,
 		ingest: ingestCommand,
 		ask: askCommand,
 	},

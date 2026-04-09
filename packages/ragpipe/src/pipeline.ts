@@ -1,3 +1,4 @@
+import consola from "consola";
 import { defaultChunker } from "./chunker.js";
 import { createRateLimitedEmbedder } from "./rate-limiter.js";
 import type { AskResult, RagpipeConfig, SearchResult } from "./types.js";
@@ -16,6 +17,14 @@ export function createPipeline(config: RagpipeConfig): Pipeline {
 
 	return {
 		async ingest(text: string, source: string): Promise<number> {
+			if (config.vectorStore.isReady && config.vectorStore.setup) {
+				const ready = await config.vectorStore.isReady();
+				if (!ready) {
+					consola.info("Vector store not ready. Running setup...");
+					await config.vectorStore.setup(config.embedding.dimensions);
+				}
+			}
+
 			const chunks = chunker.chunk(text, source);
 			for (const chunk of chunks) {
 				const vector = await embedder.embed(chunk.content);

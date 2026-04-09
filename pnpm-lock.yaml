@@ -80,7 +80,13 @@ importers:
       '@supabase/supabase-js':
         specifier: ^2.49.4
         version: 2.101.1
+      consola:
+        specifier: ^3.4.0
+        version: 3.4.2
     devDependencies:
+      '@types/node':
+        specifier: ^25.5.2
+        version: 25.5.2
       ragpipe:
         specifier: workspace:*
         version: link:../ragpipe
