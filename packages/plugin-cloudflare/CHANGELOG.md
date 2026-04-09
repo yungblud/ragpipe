@@ -1,5 +1,11 @@
 # @ragpipe/plugin-cloudflare
 
+## 0.3.0
+
+### Minor Changes
+
+- [`56fa040`](https://github.com/yungblud/ragpipe/commit/56fa040ca9bdc69fe5f57e1aedc9c01f3a3c859c) Thanks [@yungblud](https://github.com/yungblud)! - fix cloudflare text generation model api response
+
 ## 0.2.0
 
 ### Minor Changes
