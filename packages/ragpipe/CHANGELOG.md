@@ -1,5 +1,11 @@
 # ragpipe
 
+## 0.3.0
+
+### Minor Changes
+
+- [#7](https://github.com/yungblud/ragpipe/pull/7) [`aa9b535`](https://github.com/yungblud/ragpipe/commit/aa9b535dcc47f8c0b7fb128750d2379576fef82e) Thanks [@yungblud](https://github.com/yungblud)! - Add auto setup vector store
+
 ## 0.2.0
 
 ### Minor Changes
