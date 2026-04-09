@@ -77,7 +77,7 @@ export function supabaseVectorStore(
 
 		async setup(
 			dimensions: number,
-			options?: { force?: boolean },
+			setupOptions?: { force?: boolean },
 		): Promise<void> {
 			const sqlOptions = { tableName: table, queryName, dimensions };
 
@@ -109,7 +109,7 @@ export function supabaseVectorStore(
 				}
 
 				// Dimension mismatch with existing data
-				if (!options?.force) {
+				if (!setupOptions?.force) {
 					consola.error(
 						`Dimension mismatch: table has ${currentDims}, config requires ${dimensions}.`,
 					);
@@ -129,6 +129,31 @@ export function supabaseVectorStore(
 			// Table doesn't exist — fresh setup
 			return applyMigration(generateSetupSQL(sqlOptions), "ragpipe_init");
 
+			function extractProjectRef(supabaseUrl: string): string {
+				const match = supabaseUrl.match(/https:\/\/([a-z0-9]+)\.supabase\.co/);
+				if (!match) {
+					throw new Error(
+						`Cannot extract project ref from URL: ${supabaseUrl}`,
+					);
+				}
+				return match[1];
+			}
+
+			function linkProject(): void {
+				const projectRef = extractProjectRef(options.supabaseUrl);
+				consola.info(`Linking Supabase project: ${projectRef}`);
+				try {
+					execSync(`npx supabase link --project-ref ${projectRef}`, {
+						stdio: "inherit",
+						cwd: process.cwd(),
+					});
+				} catch {
+					throw new Error(
+						`Failed to link Supabase project. Run manually: npx supabase link --project-ref ${projectRef}`,
+					);
+				}
+			}
+
 			function applyMigration(sql: string, suffix: string): void {
 				const migrationsDir = join(process.cwd(), "supabase", "migrations");
 				if (!existsSync(migrationsDir)) {
@@ -144,6 +169,8 @@ export function supabaseVectorStore(
 
 				writeFileSync(filePath, sql, "utf-8");
 				consola.success(`Generated migration: ${filePath}`);
+
+				linkProject();
 
 				try {
 					execSync("npx supabase db push --include-all", {
