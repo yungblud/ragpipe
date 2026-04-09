@@ -1,5 +1,10 @@
+import { execSync } from "node:child_process";
+import { existsSync, mkdirSync, writeFileSync } from "node:fs";
+import { join } from "node:path";
 import { type SupabaseClient, createClient } from "@supabase/supabase-js";
+import { consola } from "consola";
 import type { SearchResult, VectorStorePlugin } from "ragpipe";
+import { generateSetupSQL } from "./sql.js";
 
 export interface SupabaseVectorStoreOptions {
 	supabaseUrl: string;
@@ -64,6 +69,45 @@ export function supabaseVectorStore(
 
 		async disconnect(): Promise<void> {
 			// Supabase JS client doesn't require explicit disconnection
+		},
+
+		async setup(dimensions: number): Promise<void> {
+			const sql = generateSetupSQL({
+				tableName: table,
+				queryName: queryName,
+				dimensions,
+			});
+
+			const migrationsDir = join(process.cwd(), "supabase", "migrations");
+			if (!existsSync(migrationsDir)) {
+				mkdirSync(migrationsDir, { recursive: true });
+			}
+
+			const timestamp = new Date()
+				.toISOString()
+				.replace(/[-:T]/g, "")
+				.slice(0, 14);
+			const fileName = `${timestamp}_ragpipe_init.sql`;
+			const filePath = join(migrationsDir, fileName);
+
+			writeFileSync(filePath, sql, "utf-8");
+			consola.success(`Generated migration: ${filePath}`);
+
+			try {
+				execSync("npx supabase db push --include-all", {
+					stdio: "inherit",
+					cwd: process.cwd(),
+				});
+			} catch {
+				consola.warn("supabase db push failed. Run manually:");
+				consola.info(`Migration file: ${filePath}`);
+				consola.box(sql);
+			}
+		},
+
+		async isReady(): Promise<boolean> {
+			const { error } = await supabase.from(table).select("id").limit(1);
+			return !error;
 		},
 	};
 }

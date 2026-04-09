@@ -52,9 +52,11 @@
 		"ragpipe": ">=0.1.0"
 	},
 	"dependencies": {
-		"@supabase/supabase-js": "^2.49.4"
+		"@supabase/supabase-js": "^2.49.4",
+		"consola": "^3.4.0"
 	},
 	"devDependencies": {
+		"@types/node": "^25.5.2",
 		"ragpipe": "workspace:*",
 		"tsup": "^8.4.0",
 		"typescript": "^5.8.3",
