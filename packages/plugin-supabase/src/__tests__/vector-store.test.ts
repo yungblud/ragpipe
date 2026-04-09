@@ -137,7 +137,7 @@ describe("supabaseVectorStore", () => {
 		expect(mockFrom).toHaveBeenCalledWith("documents");
 		expect(mockUpsert).toHaveBeenCalledWith(
 			{ source: "doc.md", content: "hello", vector: [0.1, 0.2] },
-			{ onConflict: "source,content" },
+			{ onConflict: "source,content_hash" },
 		);
 	});
 
