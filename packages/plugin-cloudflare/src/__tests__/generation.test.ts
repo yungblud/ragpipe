@@ -11,6 +11,22 @@ afterEach(() => {
 	vi.restoreAllMocks();
 });
 
+function chatResponse(content: string) {
+	return {
+		id: "chatcmpl-test",
+		object: "chat.completion",
+		created: 1234567890,
+		model: "@cf/meta/llama-3.1-8b-instruct",
+		choices: [
+			{
+				index: 0,
+				message: { role: "assistant", content },
+				finish_reason: "stop",
+			},
+		],
+	};
+}
+
 describe("cloudflareGeneration", () => {
 	const plugin = cloudflareGeneration({
 		accountId: "test-account",
@@ -23,14 +39,10 @@ describe("cloudflareGeneration", () => {
 		expect(plugin.model).toBe("@cf/meta/llama-3.1-8b-instruct");
 	});
 
-	it("generates text via Cloudflare API", async () => {
+	it("generates text via OpenAI-compatible endpoint", async () => {
 		mockFetch.mockResolvedValueOnce({
 			ok: true,
-			json: () =>
-				Promise.resolve({
-					result: { response: "Generated answer" },
-					success: true,
-				}),
+			json: () => Promise.resolve(chatResponse("Generated answer")),
 		});
 
 		const result = await plugin.generate("What is X?", "X is a thing.");
@@ -39,11 +51,13 @@ describe("cloudflareGeneration", () => {
 		expect(mockFetch).toHaveBeenCalledOnce();
 
 		const [url, init] = mockFetch.mock.calls[0];
-		expect(url).toContain("test-account");
-		expect(url).toContain("@cf/meta/llama-3.1-8b-instruct");
+		expect(url).toBe(
+			"https://api.cloudflare.com/client/v4/accounts/test-account/ai/v1/chat/completions",
+		);
 		expect(init.headers.Authorization).toBe("Bearer test-token");
 
 		const body = JSON.parse(init.body);
+		expect(body.model).toBe("@cf/meta/llama-3.1-8b-instruct");
 		expect(body.stream).toBe(false);
 		expect(body.messages[0]).toEqual({
 			role: "system",
@@ -63,30 +77,23 @@ describe("cloudflareGeneration", () => {
 
 		mockFetch.mockResolvedValueOnce({
 			ok: true,
-			json: () =>
-				Promise.resolve({
-					result: { response: "Short." },
-					success: true,
-				}),
+			json: () => Promise.resolve(chatResponse("Short.")),
 		});
 
 		await custom.generate("Q", "C");
 
 		const [url, init] = mockFetch.mock.calls[0];
-		expect(url).toContain("mistral-7b-instruct-v0.1");
+		expect(url).toContain("ai/v1/chat/completions");
 
 		const body = JSON.parse(init.body);
+		expect(body.model).toBe("@cf/mistral/mistral-7b-instruct-v0.1");
 		expect(body.messages[0].content).toBe("Be concise.");
 	});
 
 	it("passes per-call systemPrompt override", async () => {
 		mockFetch.mockResolvedValueOnce({
 			ok: true,
-			json: () =>
-				Promise.resolve({
-					result: { response: "OK" },
-					success: true,
-				}),
+			json: () => Promise.resolve(chatResponse("OK")),
 		});
 
 		await plugin.generate("Q", "C", { systemPrompt: "Override prompt" });
@@ -98,11 +105,7 @@ describe("cloudflareGeneration", () => {
 	it("includes conversation history when provided", async () => {
 		mockFetch.mockResolvedValueOnce({
 			ok: true,
-			json: () =>
-				Promise.resolve({
-					result: { response: "OK" },
-					success: true,
-				}),
+			json: () => Promise.resolve(chatResponse("OK")),
 		});
 
 		await plugin.generate("Q", "C", { history: "prev Q&A" });
@@ -141,11 +144,11 @@ describe("cloudflareGeneration", () => {
 			return chunks;
 		}
 
-		it("streams SSE chunks", async () => {
+		it("streams SSE chunks in OpenAI format", async () => {
 			mockFetch.mockResolvedValueOnce({
 				ok: true,
 				body: createSSEStream([
-					'data: {"response":"Hello"}\ndata: {"response":" world"}\n',
+					'data: {"choices":[{"delta":{"content":"Hello"}}]}\ndata: {"choices":[{"delta":{"content":" world"}}]}\n',
 					"data: [DONE]\n",
 				]),
 			});
@@ -162,8 +165,8 @@ describe("cloudflareGeneration", () => {
 			mockFetch.mockResolvedValueOnce({
 				ok: true,
 				body: createSSEStream([
-					'data: {"response":"part',
-					'1"}\ndata: {"response":"part2"}\n',
+					'data: {"choices":[{"delta":{"content":"part',
+					'1"}}]}\ndata: {"choices":[{"delta":{"content":"part2"}}]}\n',
 					"data: [DONE]\n",
 				]),
 			});
@@ -177,7 +180,7 @@ describe("cloudflareGeneration", () => {
 			mockFetch.mockResolvedValueOnce({
 				ok: true,
 				body: createSSEStream([
-					'data: {"response":"ok"}\ndata: {broken\ndata: {"response":"fine"}\n',
+					'data: {"choices":[{"delta":{"content":"ok"}}]}\ndata: {broken\ndata: {"choices":[{"delta":{"content":"fine"}}]}\n',
 					"data: [DONE]\n",
 				]),
 			});
@@ -221,18 +224,20 @@ describe("cloudflareGeneration", () => {
 		);
 	});
 
-	it("throws on success=false", async () => {
+	it("returns empty string when choices are empty", async () => {
 		mockFetch.mockResolvedValueOnce({
 			ok: true,
 			json: () =>
 				Promise.resolve({
-					result: { response: "" },
-					success: false,
+					id: "chatcmpl-test",
+					object: "chat.completion",
+					created: 1234567890,
+					model: "@cf/meta/llama-3.1-8b-instruct",
+					choices: [],
 				}),
 		});
 
-		await expect(plugin.generate("Q", "C")).rejects.toThrow(
-			"API returned success=false",
-		);
+		const result = await plugin.generate("Q", "C");
+		expect(result).toBe("");
 	});
 });

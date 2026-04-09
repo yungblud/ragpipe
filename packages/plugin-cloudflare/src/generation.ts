@@ -7,27 +7,39 @@ export interface CloudflareGenerationOptions {
 	systemPrompt?: string;
 }
 
-interface CloudflareMessage {
+interface ChatMessage {
 	role: "system" | "user" | "assistant";
 	content: string;
 }
 
-interface CloudflareResponse {
-	result: { response: string };
-	success: boolean;
+interface ChatChoice {
+	index: number;
+	message: {
+		role: string;
+		content: string | null;
+	};
+	finish_reason: string | null;
+}
+
+interface ChatCompletionResponse {
+	id: string;
+	object: string;
+	created: number;
+	model: string;
+	choices: ChatChoice[];
 }
 
 export function cloudflareGeneration(
 	options: CloudflareGenerationOptions,
 ): GenerationPlugin {
 	const { model } = options;
-	const baseUrl = `https://api.cloudflare.com/client/v4/accounts/${options.accountId}/ai/run/${model}`;
+	const baseUrl = `https://api.cloudflare.com/client/v4/accounts/${options.accountId}/ai/v1/chat/completions`;
 
 	function buildMessages(
 		question: string,
 		context: string,
 		opts?: { history?: string; systemPrompt?: string },
-	): CloudflareMessage[] {
+	): ChatMessage[] {
 		const systemPrompt =
 			opts?.systemPrompt ??
 			options.systemPrompt ??
@@ -57,7 +69,7 @@ export function cloudflareGeneration(
 					Authorization: `Bearer ${options.apiToken}`,
 					"Content-Type": "application/json",
 				},
-				body: JSON.stringify({ messages, stream: false }),
+				body: JSON.stringify({ model, messages, stream: false }),
 			});
 
 			if (!res.ok) {
@@ -66,15 +78,9 @@ export function cloudflareGeneration(
 				);
 			}
 
-			const data = (await res.json()) as CloudflareResponse;
+			const data = (await res.json()) as ChatCompletionResponse;
 
-			if (!data.success) {
-				throw new Error(
-					"Cloudflare generation error: API returned success=false",
-				);
-			}
-
-			return data.result.response;
+			return data.choices?.[0]?.message?.content ?? "";
 		},
 
 		async *generateStream(question, context, opts) {
@@ -86,7 +92,7 @@ export function cloudflareGeneration(
 					Authorization: `Bearer ${options.apiToken}`,
 					"Content-Type": "application/json",
 				},
-				body: JSON.stringify({ messages, stream: true }),
+				body: JSON.stringify({ model, messages, stream: true }),
 			});
 
 			if (!res.ok) {
@@ -115,8 +121,11 @@ export function cloudflareGeneration(
 						const payload = line.slice(6).trim();
 						if (payload === "[DONE]") return;
 						try {
-							const data = JSON.parse(payload) as { response: string };
-							if (data.response) yield data.response;
+							const data = JSON.parse(payload) as {
+								choices?: Array<{ delta?: { content?: string } }>;
+							};
+							const chunk = data.choices?.[0]?.delta?.content;
+							if (chunk) yield chunk;
 						} catch {
 							// skip malformed SSE chunks
 						}
