@@ -102,7 +102,15 @@ export function supabaseVectorStore(
 					);
 				}
 
-				// Table has data — check dimension
+				// Table has data
+				if (setupOptions?.force) {
+					consola.warn("Dropping and recreating table with --force...");
+					return applyMigration(
+						generateRecreateSQL(sqlOptions),
+						"ragpipe_recreate",
+					);
+				}
+
 				const currentDims = parseVectorDimension(rows[0].vector as string);
 				if (currentDims === dimensions) {
 					consola.success(
@@ -111,22 +119,13 @@ export function supabaseVectorStore(
 					return;
 				}
 
-				// Dimension mismatch with existing data
-				if (!setupOptions?.force) {
-					consola.error(
-						`Dimension mismatch: table has ${currentDims}, config requires ${dimensions}.`,
-					);
-					consola.info(
-						"Run with --force to drop and recreate (existing data will be lost).",
-					);
-					return;
-				}
-
-				consola.warn("Dropping and recreating table with --force...");
-				return applyMigration(
-					generateRecreateSQL(sqlOptions),
-					"ragpipe_recreate",
+				consola.error(
+					`Dimension mismatch: table has ${currentDims}, config requires ${dimensions}.`,
 				);
+				consola.info(
+					"Run with --force to drop and recreate (existing data will be lost).",
+				);
+				return;
 			}
 
 			// Table doesn't exist — fresh setup
