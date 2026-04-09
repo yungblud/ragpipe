@@ -15,6 +15,7 @@ describe("geminiEmbedding", () => {
 	const plugin = geminiEmbedding({
 		apiKey: "test-key",
 		model: "gemini-embedding-001",
+		dimensions: 3072,
 	});
 
 	it("has correct metadata", () => {
@@ -58,6 +59,7 @@ describe("geminiEmbedding", () => {
 		const custom = geminiEmbedding({
 			apiKey: "key",
 			model: "custom-model",
+			dimensions: 3072,
 		});
 		mockFetch.mockResolvedValueOnce({
 			ok: true,

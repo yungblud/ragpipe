@@ -16,6 +16,7 @@ describe("cloudflareEmbedding", () => {
 		accountId: "test-account",
 		apiToken: "test-token",
 		model: "@cf/qwen/qwen3-embedding-0.6b",
+		dimensions: 768,
 	});
 
 	it("has correct metadata", () => {

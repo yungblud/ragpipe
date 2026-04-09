@@ -110,6 +110,17 @@ function generateConfig(
 			}
 		}
 
+		if (role === "embedding") {
+			const dimensionDefaults: Record<string, number> = {
+				gemini: 3072,
+				cloudflare: 768,
+			};
+			const dims = dimensionDefaults[p.value];
+			if (dims) {
+				lines.push(`dimensions: ${dims},`);
+			}
+		}
+
 		return lines.join("\n\t\t");
 	}
 

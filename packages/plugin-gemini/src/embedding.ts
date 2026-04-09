@@ -3,7 +3,7 @@ import type { EmbeddingPlugin } from "ragpipe";
 export interface GeminiEmbeddingOptions {
 	apiKey: string;
 	model: string;
-	dimensions?: number;
+	dimensions: number;
 }
 
 export function geminiEmbedding(
@@ -13,7 +13,7 @@ export function geminiEmbedding(
 
 	return {
 		name: "gemini",
-		dimensions: options.dimensions ?? 3072,
+		dimensions: options.dimensions,
 		rateLimit: { delayMs: 800 },
 		model,
 		async embed(text: string): Promise<number[]> {
