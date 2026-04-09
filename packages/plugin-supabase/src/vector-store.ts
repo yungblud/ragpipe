@@ -56,7 +56,10 @@ export function supabaseVectorStore(
 		): Promise<void> {
 			const { error } = await supabase
 				.from(table)
-				.upsert({ source, content, vector }, { onConflict: "source,content" });
+				.upsert(
+					{ source, content, vector },
+					{ onConflict: "source,content_hash" },
+				);
 
 			if (error) {
 				throw new Error(`Supabase upsert error: ${error.message}`);

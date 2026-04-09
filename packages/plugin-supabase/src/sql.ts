@@ -22,8 +22,9 @@ CREATE TABLE IF NOT EXISTS ${table} (
   id BIGSERIAL PRIMARY KEY,
   source TEXT NOT NULL,
   content TEXT NOT NULL,
+  content_hash TEXT GENERATED ALWAYS AS (md5(content)) STORED,
   vector VECTOR(${dims}),
-  UNIQUE(source, content)
+  UNIQUE(source, content_hash)
 );
 
 CREATE OR REPLACE FUNCTION ${query}(
