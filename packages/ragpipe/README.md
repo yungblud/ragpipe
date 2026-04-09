@@ -16,6 +16,9 @@ pnpm add ragpipe
 # Scaffold a ragpipe.config.ts
 npx ragpipe init
 
+# Set up vector store schema
+npx ragpipe setup
+
 # Ingest documents
 npx ragpipe ingest ./docs
 

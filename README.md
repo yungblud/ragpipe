@@ -20,6 +20,9 @@ Pluggable TypeScript RAG toolkit — `defineConfig()` one file, embed → search
 # Scaffold a config file interactively
 npx ragpipe init
 
+# Set up vector store schema (creates tables, indexes, etc.)
+npx ragpipe setup
+
 # Ingest your documents
 npx ragpipe ingest ./docs/
 
@@ -158,9 +161,19 @@ ragpipe
 
 The core pipeline is simple:
 
-1. **Ingest** — chunk documents → embed each chunk → store vectors
-2. **Search** — embed query → find similar chunks
-3. **Ask** — search → build context → generate answer with LLM
+1. **Setup** — create vector store tables and indexes based on your config
+2. **Ingest** — chunk documents → embed each chunk → store vectors
+3. **Search** — embed query → find similar chunks
+4. **Ask** — search → build context → generate answer with LLM
+
+### CLI Commands
+
+| Command | Description |
+|---------|-------------|
+| `npx ragpipe init` | Scaffold a `ragpipe.config.ts` interactively |
+| `npx ragpipe setup` | Set up vector store schema (tables, indexes). Use `--force` to recreate from scratch |
+| `npx ragpipe ingest <dir>` | Chunk, embed, and store documents |
+| `npx ragpipe ask "<question>"` | Search context and generate an answer |
 
 ## Why ragpipe?
 
@@ -169,7 +182,7 @@ The core pipeline is simple:
 | Bundle size | ~2MB+ | <50KB core |
 | Learning curve | Chain, Agent, Tool, Memory... | 4 functions |
 | Config | Assemble in code | Declarative `defineConfig()` |
-| CLI | None | `npx ragpipe ingest/ask/init` |
+| CLI | None | `npx ragpipe init/setup/ingest/ask` |
 | TypeScript | Loose types | Strict from day one |
 | Scope | General-purpose AI framework | **RAG only** — does one thing well |
 
