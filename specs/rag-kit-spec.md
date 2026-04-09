@@ -565,7 +565,7 @@ npx ragpipe ask "query"   # → return answer
 
 - [ ] `@ragpipe/plugin-voyage` — Voyage AI embedding
 - [ ] `@ragpipe/plugin-ollama` — local embedding + generation
-- [ ] `@ragpipe/plugin-cloudflare` — Cloudflare Workers AI embedding
+- [x] `@ragpipe/plugin-cloudflare` — Cloudflare Workers AI embedding
 - [ ] `@ragpipe/plugin-bedrock` — AWS Bedrock embedding + generation
 - [ ] `@ragpipe/plugin-openai` — OpenAI embedding + generation
 - [ ] `@ragpipe/plugin-pgvector` — PostgreSQL direct connection
