@@ -2,19 +2,20 @@ import type { EmbeddingPlugin } from "ragpipe";
 
 export interface GeminiEmbeddingOptions {
 	apiKey: string;
-	model?: string;
+	model: string;
+	dimensions?: number;
 }
 
 export function geminiEmbedding(
 	options: GeminiEmbeddingOptions,
 ): EmbeddingPlugin {
-	const model = options.model ?? "gemini-embedding-001";
+	const { model } = options;
 
 	return {
 		name: "gemini",
-		dimensions: 3072,
+		dimensions: options.dimensions ?? 3072,
 		rateLimit: { delayMs: 800 },
-
+		model,
 		async embed(text: string): Promise<number[]> {
 			const res = await fetch(
 				`https://generativelanguage.googleapis.com/v1beta/models/${model}:embedContent?key=${options.apiKey}`,

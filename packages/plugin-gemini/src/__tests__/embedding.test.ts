@@ -12,12 +12,16 @@ afterEach(() => {
 });
 
 describe("geminiEmbedding", () => {
-	const plugin = geminiEmbedding({ apiKey: "test-key" });
+	const plugin = geminiEmbedding({
+		apiKey: "test-key",
+		model: "gemini-embedding-001",
+	});
 
 	it("has correct metadata", () => {
 		expect(plugin.name).toBe("gemini");
 		expect(plugin.dimensions).toBe(3072);
 		expect(plugin.rateLimit).toEqual({ delayMs: 800 });
+		expect(plugin.model).toEqual("gemini-embedding-001");
 	});
 
 	it("embeds text via Gemini API", async () => {
@@ -39,6 +43,15 @@ describe("geminiEmbedding", () => {
 
 		const body = JSON.parse(init.body);
 		expect(body.content.parts[0].text).toBe("hello world");
+	});
+
+	it("uses custom dimensions when provided", () => {
+		const custom = geminiEmbedding({
+			apiKey: "key",
+			model: "gemini-embedding-001",
+			dimensions: 256,
+		});
+		expect(custom.dimensions).toBe(256);
 	});
 
 	it("uses custom model", async () => {

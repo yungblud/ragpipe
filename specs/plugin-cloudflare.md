@@ -164,23 +164,23 @@ packages/plugin-cloudflare/
 ## 6. 구현 단계
 
 ### Step 1 — 패키지 스캐폴딩
-- [ ] `packages/plugin-cloudflare/` 생성
-- [ ] `package.json`, `tsconfig.json`, `tsup.config.ts` 설정
-- [ ] `src/index.ts` 엔트리 포인트
+- [x] `packages/plugin-cloudflare/` 생성
+- [x] `package.json`, `tsconfig.json`, `tsup.config.ts` 설정
+- [x] `src/index.ts` 엔트리 포인트
 
 ### Step 2 — Embedding 구현
-- [ ] `CloudflareEmbeddingOptions` 타입 정의
-- [ ] `cloudflareEmbedding()` 팩토리 함수
-- [ ] `embed()` — 단일 텍스트 임베딩
-- [ ] `embedMany()` — 배열 입력 배치 처리
-- [ ] 에러 핸들링 (`success: false` 응답 처리)
+- [x] `CloudflareEmbeddingOptions` 타입 정의
+- [x] `cloudflareEmbedding()` 팩토리 함수
+- [x] `embed()` — 단일 텍스트 임베딩
+- [x] `embedMany()` — 배열 입력 배치 처리
+- [x] 에러 핸들링 (`success: false` 응답 처리)
 
 ### Step 3 — Generation 구현
-- [ ] `CloudflareGenerationOptions` 타입 정의
-- [ ] `cloudflareGeneration()` 팩토리 함수
-- [ ] `generate()` — 동기 응답
-- [ ] `generateStream()` — SSE 파싱 + AsyncIterable
-- [ ] system prompt, history 지원
+- [x] `CloudflareGenerationOptions` 타입 정의
+- [x] `cloudflareGeneration()` 팩토리 함수
+- [x] `generate()` — 동기 응답
+- [x] `generateStream()` — SSE 파싱 + AsyncIterable
+- [x] system prompt, history 지원
 
 ### Step 4 — 빌드/테스트 검증
 - [ ] `pnpm turbo run build` 통과

@@ -17,11 +17,11 @@ import { geminiEmbedding, geminiGeneration } from "@ragpipe/plugin-gemini";
 export default defineConfig({
   embedding: geminiEmbedding({
     apiKey: process.env.GEMINI_API_KEY ?? "",
-    model: "gemini-embedding-001", // default
+    model: "gemini-embedding-001",
   }),
   generation: geminiGeneration({
     apiKey: process.env.GEMINI_API_KEY ?? "",
-    model: "gemini-2.5-flash", // default
+    model: "gemini-3.1-flash-lite-preview",
     systemPrompt: "Answer based on the provided context.",
   }),
   // ... vectorStore
@@ -37,7 +37,7 @@ Returns an `EmbeddingPlugin` that calls the Gemini Embedding API.
 | Option | Type | Default | Description |
 |---|---|---|---|
 | `apiKey` | `string` | — | Google AI API key (required) |
-| `model` | `string` | `"gemini-embedding-001"` | Embedding model name |
+| `model` | `string` | - | Embedding model name (required) |
 
 - **Dimensions**: 3072
 - **Rate limit**: 800ms between calls (built-in)
@@ -50,7 +50,7 @@ Returns a `GenerationPlugin` that calls the Gemini Content Generation API.
 | Option | Type | Default | Description |
 |---|---|---|---|
 | `apiKey` | `string` | — | Google AI API key (required) |
-| `model` | `string` | `"gemini-2.5-flash"` | Generation model name |
+| `model` | `string` | - | Generation model name (required) |
 | `systemPrompt` | `string` | `"Answer based on the provided context."` | Default system instruction |
 
 - **Streaming**: `generateStream()` returns an `AsyncIterable<string>` via SSE

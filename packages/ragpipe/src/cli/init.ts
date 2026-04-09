@@ -17,6 +17,12 @@ const EMBEDDING_PROVIDERS: ProviderOption[] = [
 		package: "@ragpipe/plugin-gemini",
 		importName: "geminiEmbedding",
 	},
+	{
+		label: "Cloudflare Workers AI",
+		value: "cloudflare",
+		package: "@ragpipe/plugin-cloudflare",
+		importName: "cloudflareEmbedding",
+	},
 ];
 
 const VECTORSTORE_PROVIDERS: ProviderOption[] = [
@@ -34,6 +40,12 @@ const GENERATION_PROVIDERS: ProviderOption[] = [
 		value: "gemini",
 		package: "@ragpipe/plugin-gemini",
 		importName: "geminiGeneration",
+	},
+	{
+		label: "Cloudflare Workers AI",
+		value: "cloudflare",
+		package: "@ragpipe/plugin-cloudflare",
+		importName: "cloudflareGeneration",
 	},
 ];
 
@@ -59,17 +71,59 @@ function generateConfig(
 		),
 	].join("\n");
 
+	function providerConfig(
+		p: ProviderOption,
+		role: "embedding" | "vectorStore" | "generation",
+	): string {
+		const lines: string[] = [];
+
+		if (p.value === "cloudflare") {
+			lines.push(
+				"accountId: process.env.CLOUDFLARE_ACCOUNT_ID!,",
+				"apiToken: process.env.CLOUDFLARE_API_TOKEN!,",
+			);
+		} else if (p.value === "supabase") {
+			lines.push(
+				"supabaseUrl: process.env.SUPABASE_URL!,",
+				"supabaseKey: process.env.SUPABASE_SERVICE_ROLE_KEY!,",
+			);
+		} else if (p.value === "gemini") {
+			lines.push("apiKey: process.env.GEMINI_API_KEY!,");
+		} else {
+			lines.push("apiKey: process.env.API_KEY!,");
+		}
+
+		if (role === "embedding" || role === "generation") {
+			const modelDefaults: Record<string, Record<string, string>> = {
+				embedding: {
+					gemini: "gemini-embedding-001",
+					cloudflare: "@cf/qwen/qwen3-embedding-0.6b",
+				},
+				generation: {
+					gemini: "gemini-3.1-flash-lite-preview",
+					cloudflare: "@cf/openai/gpt-oss-20b",
+				},
+			};
+			const model = modelDefaults[role]?.[p.value];
+			if (model) {
+				lines.push(`model: "${model}",`);
+			}
+		}
+
+		return lines.join("\n\t\t");
+	}
+
 	return `${importLines}
 
 export default defineConfig({
 	embedding: ${embedding.importName}({
-		apiKey: process.env.${embedding.value === "gemini" ? "GEMINI_API_KEY" : "API_KEY"}!,
+		${providerConfig(embedding, "embedding")}
 	}),
 	vectorStore: ${vectorStore.importName}({
-		${vectorStore.value === "supabase" ? "supabaseUrl: process.env.SUPABASE_URL!,\n\t\tsupabaseKey: process.env.SUPABASE_SERVICE_ROLE_KEY!," : ""}
+		${providerConfig(vectorStore, "vectorStore")}
 	}),
 	generation: ${generation.importName}({
-		apiKey: process.env.${generation.value === "gemini" ? "GEMINI_API_KEY" : "API_KEY"}!,
+		${providerConfig(generation, "generation")}
 	}),
 });
 `;

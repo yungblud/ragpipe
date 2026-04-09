@@ -15,6 +15,7 @@ export function createMockEmbedding(
 		async embed(_text: string) {
 			return [0.1, 0.2, 0.3];
 		},
+		model: "mock-model",
 		...overrides,
 	};
 }
@@ -48,6 +49,7 @@ export function createMockGeneration(
 ): GenerationPlugin {
 	return {
 		name: "mock-generation",
+		model: "mock-model",
 		async generate(question: string, _context: string) {
 			return `Answer to: ${question}`;
 		},

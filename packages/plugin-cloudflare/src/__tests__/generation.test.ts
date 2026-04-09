@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { geminiGeneration } from "../generation.js";
+import { cloudflareGeneration } from "../generation.js";
 
 const mockFetch = vi.fn();
 
@@ -11,23 +11,25 @@ afterEach(() => {
 	vi.restoreAllMocks();
 });
 
-describe("geminiGeneration", () => {
-	const plugin = geminiGeneration({
-		apiKey: "test-key",
-		model: "gemini-2.5-flash",
+describe("cloudflareGeneration", () => {
+	const plugin = cloudflareGeneration({
+		accountId: "test-account",
+		apiToken: "test-token",
+		model: "@cf/meta/llama-3.1-8b-instruct",
 	});
 
 	it("has correct metadata", () => {
-		expect(plugin.name).toBe("gemini");
-		expect(plugin.model).toBe("gemini-2.5-flash");
+		expect(plugin.name).toBe("cloudflare");
+		expect(plugin.model).toBe("@cf/meta/llama-3.1-8b-instruct");
 	});
 
-	it("generates text via Gemini API", async () => {
+	it("generates text via Cloudflare API", async () => {
 		mockFetch.mockResolvedValueOnce({
 			ok: true,
 			json: () =>
 				Promise.resolve({
-					candidates: [{ content: { parts: [{ text: "Generated answer" }] } }],
+					result: { response: "Generated answer" },
+					success: true,
 				}),
 		});
 
@@ -37,21 +39,25 @@ describe("geminiGeneration", () => {
 		expect(mockFetch).toHaveBeenCalledOnce();
 
 		const [url, init] = mockFetch.mock.calls[0];
-		expect(url).toContain("gemini-2.5-flash:generateContent");
-		expect(url).toContain("key=test-key");
+		expect(url).toContain("test-account");
+		expect(url).toContain("@cf/meta/llama-3.1-8b-instruct");
+		expect(init.headers.Authorization).toBe("Bearer test-token");
 
 		const body = JSON.parse(init.body);
-		expect(body.contents[0].parts[0].text).toContain("What is X?");
-		expect(body.contents[0].parts[0].text).toContain("X is a thing.");
-		expect(body.systemInstruction.parts[0].text).toBe(
-			"Answer based on the provided context.",
-		);
+		expect(body.stream).toBe(false);
+		expect(body.messages[0]).toEqual({
+			role: "system",
+			content: "Answer based on the provided context.",
+		});
+		expect(body.messages[1].content).toContain("What is X?");
+		expect(body.messages[1].content).toContain("X is a thing.");
 	});
 
 	it("uses custom model and systemPrompt", async () => {
-		const custom = geminiGeneration({
-			apiKey: "key",
-			model: "gemini-pro",
+		const custom = cloudflareGeneration({
+			accountId: "acc",
+			apiToken: "tok",
+			model: "@cf/mistral/mistral-7b-instruct-v0.1",
 			systemPrompt: "Be concise.",
 		});
 
@@ -59,17 +65,18 @@ describe("geminiGeneration", () => {
 			ok: true,
 			json: () =>
 				Promise.resolve({
-					candidates: [{ content: { parts: [{ text: "Short." }] } }],
+					result: { response: "Short." },
+					success: true,
 				}),
 		});
 
 		await custom.generate("Q", "C");
 
 		const [url, init] = mockFetch.mock.calls[0];
-		expect(url).toContain("gemini-pro:generateContent");
+		expect(url).toContain("mistral-7b-instruct-v0.1");
 
 		const body = JSON.parse(init.body);
-		expect(body.systemInstruction.parts[0].text).toBe("Be concise.");
+		expect(body.messages[0].content).toBe("Be concise.");
 	});
 
 	it("passes per-call systemPrompt override", async () => {
@@ -77,14 +84,15 @@ describe("geminiGeneration", () => {
 			ok: true,
 			json: () =>
 				Promise.resolve({
-					candidates: [{ content: { parts: [{ text: "OK" }] } }],
+					result: { response: "OK" },
+					success: true,
 				}),
 		});
 
 		await plugin.generate("Q", "C", { systemPrompt: "Override prompt" });
 
 		const body = JSON.parse(mockFetch.mock.calls[0][1].body);
-		expect(body.systemInstruction.parts[0].text).toBe("Override prompt");
+		expect(body.messages[0].content).toBe("Override prompt");
 	});
 
 	it("includes conversation history when provided", async () => {
@@ -92,14 +100,15 @@ describe("geminiGeneration", () => {
 			ok: true,
 			json: () =>
 				Promise.resolve({
-					candidates: [{ content: { parts: [{ text: "OK" }] } }],
+					result: { response: "OK" },
+					success: true,
 				}),
 		});
 
 		await plugin.generate("Q", "C", { history: "prev Q&A" });
 
 		const body = JSON.parse(mockFetch.mock.calls[0][1].body);
-		expect(body.contents[0].parts[0].text).toContain(
+		expect(body.messages[1].content).toContain(
 			"Conversation history:\nprev Q&A",
 		);
 	});
@@ -119,10 +128,6 @@ describe("geminiGeneration", () => {
 			};
 		}
 
-		function geminiSSE(text: string): string {
-			return `data: {"candidates":[{"content":{"parts":[{"text":"${text}"}]}}]}`;
-		}
-
 		async function collectStream(
 			question: string,
 			context: string,
@@ -140,7 +145,8 @@ describe("geminiGeneration", () => {
 			mockFetch.mockResolvedValueOnce({
 				ok: true,
 				body: createSSEStream([
-					`${geminiSSE("Hello")}\n${geminiSSE(" world")}\n`,
+					'data: {"response":"Hello"}\ndata: {"response":" world"}\n',
+					"data: [DONE]\n",
 				]),
 			});
 
@@ -148,18 +154,17 @@ describe("geminiGeneration", () => {
 
 			expect(chunks).toEqual(["Hello", " world"]);
 
-			const [url, init] = mockFetch.mock.calls[0];
-			expect(url).toContain("streamGenerateContent");
-			expect(url).toContain("alt=sse");
-			expect(JSON.parse(init.body).contents).toBeDefined();
+			const body = JSON.parse(mockFetch.mock.calls[0][1].body);
+			expect(body.stream).toBe(true);
 		});
 
 		it("handles buffered partial lines", async () => {
 			mockFetch.mockResolvedValueOnce({
 				ok: true,
 				body: createSSEStream([
-					`${geminiSSE("part1")}\n`,
-					`${geminiSSE("part2")}\n`,
+					'data: {"response":"part',
+					'1"}\ndata: {"response":"part2"}\n',
+					"data: [DONE]\n",
 				]),
 			});
 
@@ -172,7 +177,8 @@ describe("geminiGeneration", () => {
 			mockFetch.mockResolvedValueOnce({
 				ok: true,
 				body: createSSEStream([
-					`${geminiSSE("ok")}\ndata: {broken\n${geminiSSE("fine")}\n`,
+					'data: {"response":"ok"}\ndata: {broken\ndata: {"response":"fine"}\n',
+					"data: [DONE]\n",
 				]),
 			});
 
@@ -189,7 +195,7 @@ describe("geminiGeneration", () => {
 			});
 
 			await expect(collectStream("Q", "C")).rejects.toThrow(
-				"Gemini generation stream error: 502 Bad Gateway",
+				"Cloudflare generation stream error: 502 Bad Gateway",
 			);
 		});
 
@@ -203,7 +209,7 @@ describe("geminiGeneration", () => {
 		});
 	});
 
-	it("throws on API error", async () => {
+	it("throws on HTTP error", async () => {
 		mockFetch.mockResolvedValueOnce({
 			ok: false,
 			status: 500,
@@ -211,7 +217,22 @@ describe("geminiGeneration", () => {
 		});
 
 		await expect(plugin.generate("Q", "C")).rejects.toThrow(
-			"Gemini generation error: 500 Server Error",
+			"Cloudflare generation error: 500 Server Error",
+		);
+	});
+
+	it("throws on success=false", async () => {
+		mockFetch.mockResolvedValueOnce({
+			ok: true,
+			json: () =>
+				Promise.resolve({
+					result: { response: "" },
+					success: false,
+				}),
+		});
+
+		await expect(plugin.generate("Q", "C")).rejects.toThrow(
+			"API returned success=false",
 		);
 	});
 });
