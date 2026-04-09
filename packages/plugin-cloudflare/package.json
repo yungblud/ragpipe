@@ -1,6 +1,6 @@
 {
 	"name": "@ragpipe/plugin-cloudflare",
-	"version": "0.1.0-alpha.1",
+	"version": "0.1.0",
 	"description": "Cloudflare Workers AI embedding and generation plugin for ragpipe",
 	"type": "module",
 	"license": "MIT",
@@ -50,7 +50,7 @@
 		"plugin"
 	],
 	"peerDependencies": {
-		"ragpipe": ">=0.1.0"
+		"ragpipe": ">=0.2.0"
 	},
 	"devDependencies": {
 		"ragpipe": "workspace:*",
