@@ -9,7 +9,7 @@
 		"lint:fix": "biome check --write .",
 		"test": "turbo run test",
 		"typecheck": "turbo run typecheck",
-		"version-packages": "changeset version",
+		"version-packages": "changeset version && pnpm biome check --write .",
 		"release": "turbo run build && changeset publish"
 	},
 	"devDependencies": {
