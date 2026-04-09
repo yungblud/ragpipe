@@ -104,6 +104,105 @@ describe("geminiGeneration", () => {
 		);
 	});
 
+	describe("generateStream", () => {
+		function createSSEStream(chunks: string[]) {
+			const encoder = new TextEncoder();
+			let index = 0;
+			return {
+				getReader: () => ({
+					read: async () => {
+						if (index >= chunks.length) return { done: true, value: undefined };
+						return { done: false, value: encoder.encode(chunks[index++]) };
+					},
+					releaseLock: () => {},
+				}),
+			};
+		}
+
+		function geminiSSE(text: string): string {
+			return `data: {"candidates":[{"content":{"parts":[{"text":"${text}"}]}}]}`;
+		}
+
+		async function collectStream(
+			question: string,
+			context: string,
+		): Promise<string[]> {
+			const stream = plugin.generateStream;
+			if (!stream) throw new Error("generateStream not defined");
+			const chunks: string[] = [];
+			for await (const chunk of stream.call(plugin, question, context)) {
+				chunks.push(chunk);
+			}
+			return chunks;
+		}
+
+		it("streams SSE chunks", async () => {
+			mockFetch.mockResolvedValueOnce({
+				ok: true,
+				body: createSSEStream([
+					`${geminiSSE("Hello")}\n${geminiSSE(" world")}\n`,
+				]),
+			});
+
+			const chunks = await collectStream("Q", "C");
+
+			expect(chunks).toEqual(["Hello", " world"]);
+
+			const [url, init] = mockFetch.mock.calls[0];
+			expect(url).toContain("streamGenerateContent");
+			expect(url).toContain("alt=sse");
+			expect(JSON.parse(init.body).contents).toBeDefined();
+		});
+
+		it("handles buffered partial lines", async () => {
+			mockFetch.mockResolvedValueOnce({
+				ok: true,
+				body: createSSEStream([
+					`${geminiSSE("part1")}\n`,
+					`${geminiSSE("part2")}\n`,
+				]),
+			});
+
+			const chunks = await collectStream("Q", "C");
+
+			expect(chunks).toEqual(["part1", "part2"]);
+		});
+
+		it("skips malformed JSON chunks", async () => {
+			mockFetch.mockResolvedValueOnce({
+				ok: true,
+				body: createSSEStream([
+					`${geminiSSE("ok")}\ndata: {broken\n${geminiSSE("fine")}\n`,
+				]),
+			});
+
+			const chunks = await collectStream("Q", "C");
+
+			expect(chunks).toEqual(["ok", "fine"]);
+		});
+
+		it("throws on HTTP error", async () => {
+			mockFetch.mockResolvedValueOnce({
+				ok: false,
+				status: 502,
+				text: () => Promise.resolve("Bad Gateway"),
+			});
+
+			await expect(collectStream("Q", "C")).rejects.toThrow(
+				"Gemini generation stream error: 502 Bad Gateway",
+			);
+		});
+
+		it("throws when response body is missing", async () => {
+			mockFetch.mockResolvedValueOnce({
+				ok: true,
+				body: null,
+			});
+
+			await expect(collectStream("Q", "C")).rejects.toThrow("No response body");
+		});
+	});
+
 	it("throws on API error", async () => {
 		mockFetch.mockResolvedValueOnce({
 			ok: false,

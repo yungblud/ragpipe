@@ -113,6 +113,102 @@ describe("cloudflareGeneration", () => {
 		);
 	});
 
+	describe("generateStream", () => {
+		function createSSEStream(chunks: string[]) {
+			const encoder = new TextEncoder();
+			let index = 0;
+			return {
+				getReader: () => ({
+					read: async () => {
+						if (index >= chunks.length) return { done: true, value: undefined };
+						return { done: false, value: encoder.encode(chunks[index++]) };
+					},
+					releaseLock: () => {},
+				}),
+			};
+		}
+
+		async function collectStream(
+			question: string,
+			context: string,
+		): Promise<string[]> {
+			const stream = plugin.generateStream;
+			if (!stream) throw new Error("generateStream not defined");
+			const chunks: string[] = [];
+			for await (const chunk of stream.call(plugin, question, context)) {
+				chunks.push(chunk);
+			}
+			return chunks;
+		}
+
+		it("streams SSE chunks", async () => {
+			mockFetch.mockResolvedValueOnce({
+				ok: true,
+				body: createSSEStream([
+					'data: {"response":"Hello"}\ndata: {"response":" world"}\n',
+					"data: [DONE]\n",
+				]),
+			});
+
+			const chunks = await collectStream("Q", "C");
+
+			expect(chunks).toEqual(["Hello", " world"]);
+
+			const body = JSON.parse(mockFetch.mock.calls[0][1].body);
+			expect(body.stream).toBe(true);
+		});
+
+		it("handles buffered partial lines", async () => {
+			mockFetch.mockResolvedValueOnce({
+				ok: true,
+				body: createSSEStream([
+					'data: {"response":"part',
+					'1"}\ndata: {"response":"part2"}\n',
+					"data: [DONE]\n",
+				]),
+			});
+
+			const chunks = await collectStream("Q", "C");
+
+			expect(chunks).toEqual(["part1", "part2"]);
+		});
+
+		it("skips malformed JSON chunks", async () => {
+			mockFetch.mockResolvedValueOnce({
+				ok: true,
+				body: createSSEStream([
+					'data: {"response":"ok"}\ndata: {broken\ndata: {"response":"fine"}\n',
+					"data: [DONE]\n",
+				]),
+			});
+
+			const chunks = await collectStream("Q", "C");
+
+			expect(chunks).toEqual(["ok", "fine"]);
+		});
+
+		it("throws on HTTP error", async () => {
+			mockFetch.mockResolvedValueOnce({
+				ok: false,
+				status: 502,
+				text: () => Promise.resolve("Bad Gateway"),
+			});
+
+			await expect(collectStream("Q", "C")).rejects.toThrow(
+				"Cloudflare generation stream error: 502 Bad Gateway",
+			);
+		});
+
+		it("throws when response body is missing", async () => {
+			mockFetch.mockResolvedValueOnce({
+				ok: true,
+				body: null,
+			});
+
+			await expect(collectStream("Q", "C")).rejects.toThrow("No response body");
+		});
+	});
+
 	it("throws on HTTP error", async () => {
 		mockFetch.mockResolvedValueOnce({
 			ok: false,

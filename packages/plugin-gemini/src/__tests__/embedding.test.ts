@@ -45,6 +45,15 @@ describe("geminiEmbedding", () => {
 		expect(body.content.parts[0].text).toBe("hello world");
 	});
 
+	it("uses custom dimensions when provided", () => {
+		const custom = geminiEmbedding({
+			apiKey: "key",
+			model: "gemini-embedding-001",
+			dimensions: 256,
+		});
+		expect(custom.dimensions).toBe(256);
+	});
+
 	it("uses custom model", async () => {
 		const custom = geminiEmbedding({
 			apiKey: "key",

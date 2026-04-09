@@ -4,6 +4,7 @@ export interface CloudflareEmbeddingOptions {
 	accountId: string;
 	apiToken: string;
 	model: string;
+	dimensions?: number;
 }
 
 export function cloudflareEmbedding(
@@ -42,7 +43,7 @@ export function cloudflareEmbedding(
 
 	return {
 		name: "cloudflare",
-		dimensions: 768,
+		dimensions: options.dimensions ?? 768,
 		model,
 
 		async embed(text: string): Promise<number[]> {

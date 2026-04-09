@@ -24,6 +24,16 @@ describe("cloudflareEmbedding", () => {
 		expect(plugin.model).toBe("@cf/qwen/qwen3-embedding-0.6b");
 	});
 
+	it("uses custom dimensions when provided", () => {
+		const custom = cloudflareEmbedding({
+			accountId: "test-account",
+			apiToken: "test-token",
+			model: "@cf/baai/bge-large-en-v1.5",
+			dimensions: 1024,
+		});
+		expect(custom.dimensions).toBe(1024);
+	});
+
 	it("embeds text via Cloudflare API", async () => {
 		const fakeVector = [0.1, 0.2, 0.3];
 		mockFetch.mockResolvedValueOnce({
