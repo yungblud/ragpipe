@@ -4,7 +4,11 @@ import { join } from "node:path";
 import { type SupabaseClient, createClient } from "@supabase/supabase-js";
 import { consola } from "consola";
 import type { SearchResult, VectorStorePlugin } from "ragpipe";
-import { generateSetupSQL } from "./sql.js";
+import {
+	generateRecreateSQL,
+	generateSetupSQL,
+	parseVectorDimension,
+} from "./sql.js";
 
 export interface SupabaseVectorStoreOptions {
 	supabaseUrl: string;
@@ -71,37 +75,86 @@ export function supabaseVectorStore(
 			// Supabase JS client doesn't require explicit disconnection
 		},
 
-		async setup(dimensions: number): Promise<void> {
-			const sql = generateSetupSQL({
-				tableName: table,
-				queryName: queryName,
-				dimensions,
-			});
+		async setup(
+			dimensions: number,
+			options?: { force?: boolean },
+		): Promise<void> {
+			const sqlOptions = { tableName: table, queryName, dimensions };
 
-			const migrationsDir = join(process.cwd(), "supabase", "migrations");
-			if (!existsSync(migrationsDir)) {
-				mkdirSync(migrationsDir, { recursive: true });
+			// Check if table already exists
+			const { data: rows, error: tableError } = await supabase
+				.from(table)
+				.select("vector")
+				.limit(1);
+
+			if (!tableError && rows) {
+				if (rows.length === 0) {
+					// Table exists but empty — safe to recreate
+					consola.info(
+						"Table exists but is empty. Recreating with new dimensions...",
+					);
+					return applyMigration(
+						generateRecreateSQL(sqlOptions),
+						"ragpipe_recreate",
+					);
+				}
+
+				// Table has data — check dimension
+				const currentDims = parseVectorDimension(rows[0].vector as string);
+				if (currentDims === dimensions) {
+					consola.success(
+						`Vector store is already configured (${dimensions} dimensions).`,
+					);
+					return;
+				}
+
+				// Dimension mismatch with existing data
+				if (!options?.force) {
+					consola.error(
+						`Dimension mismatch: table has ${currentDims}, config requires ${dimensions}.`,
+					);
+					consola.info(
+						"Run with --force to drop and recreate (existing data will be lost).",
+					);
+					return;
+				}
+
+				consola.warn("Dropping and recreating table with --force...");
+				return applyMigration(
+					generateRecreateSQL(sqlOptions),
+					"ragpipe_recreate",
+				);
 			}
 
-			const timestamp = new Date()
-				.toISOString()
-				.replace(/[-:T]/g, "")
-				.slice(0, 14);
-			const fileName = `${timestamp}_ragpipe_init.sql`;
-			const filePath = join(migrationsDir, fileName);
+			// Table doesn't exist — fresh setup
+			return applyMigration(generateSetupSQL(sqlOptions), "ragpipe_init");
 
-			writeFileSync(filePath, sql, "utf-8");
-			consola.success(`Generated migration: ${filePath}`);
+			function applyMigration(sql: string, suffix: string): void {
+				const migrationsDir = join(process.cwd(), "supabase", "migrations");
+				if (!existsSync(migrationsDir)) {
+					mkdirSync(migrationsDir, { recursive: true });
+				}
 
-			try {
-				execSync("npx supabase db push --include-all", {
-					stdio: "inherit",
-					cwd: process.cwd(),
-				});
-			} catch {
-				consola.warn("supabase db push failed. Run manually:");
-				consola.info(`Migration file: ${filePath}`);
-				consola.box(sql);
+				const timestamp = new Date()
+					.toISOString()
+					.replace(/[-:T]/g, "")
+					.slice(0, 14);
+				const fileName = `${timestamp}_${suffix}.sql`;
+				const filePath = join(migrationsDir, fileName);
+
+				writeFileSync(filePath, sql, "utf-8");
+				consola.success(`Generated migration: ${filePath}`);
+
+				try {
+					execSync("npx supabase db push --include-all", {
+						stdio: "inherit",
+						cwd: process.cwd(),
+					});
+				} catch {
+					consola.warn("supabase db push failed. Run manually:");
+					consola.info(`Migration file: ${filePath}`);
+					consola.box(sql);
+				}
 			}
 		},
 

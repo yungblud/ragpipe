@@ -5,15 +5,17 @@ export function validateIdentifier(name: string): string {
 	return name;
 }
 
-export function generateSetupSQL(options: {
+interface SetupSQLOptions {
 	tableName: string;
 	queryName: string;
 	dimensions: number;
-}): string {
-	const table = validateIdentifier(options.tableName);
-	const query = validateIdentifier(options.queryName);
-	const dims = options.dimensions;
+}
 
+function generateTableAndFunction(
+	table: string,
+	query: string,
+	dims: number,
+): string {
 	return `CREATE EXTENSION IF NOT EXISTS vector;
 
 CREATE TABLE IF NOT EXISTS ${table} (
@@ -46,4 +48,26 @@ BEGIN
   LIMIT match_count;
 END;
 $$;`;
+}
+
+export function generateSetupSQL(options: SetupSQLOptions): string {
+	const table = validateIdentifier(options.tableName);
+	const query = validateIdentifier(options.queryName);
+	return generateTableAndFunction(table, query, options.dimensions);
+}
+
+export function generateRecreateSQL(options: SetupSQLOptions): string {
+	const table = validateIdentifier(options.tableName);
+	const query = validateIdentifier(options.queryName);
+
+	return `DROP FUNCTION IF EXISTS ${query};
+DROP TABLE IF EXISTS ${table};
+
+${generateTableAndFunction(table, query, options.dimensions)}`;
+}
+
+export function parseVectorDimension(vector: string): number {
+	const trimmed = vector.replace(/^\[|\]$/g, "");
+	if (!trimmed) return 0;
+	return trimmed.split(",").length;
 }

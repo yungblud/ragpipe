@@ -7,7 +7,15 @@ export const setupCommand = defineCommand({
 		name: "setup",
 		description: "Set up vector store schema",
 	},
-	async run() {
+	args: {
+		force: {
+			type: "boolean",
+			description:
+				"Force recreate table even if data exists (data will be lost)",
+			default: false,
+		},
+	},
+	async run({ args }) {
 		const config = await loadConfig();
 		const { embedding, vectorStore } = config;
 
@@ -22,7 +30,7 @@ export const setupCommand = defineCommand({
 			return;
 		}
 
-		await vectorStore.setup(embedding.dimensions);
+		await vectorStore.setup(embedding.dimensions, { force: args.force });
 		consola.success("Vector store setup complete!");
 	},
 });

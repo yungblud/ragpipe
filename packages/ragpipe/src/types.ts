@@ -29,7 +29,7 @@ export interface VectorStorePlugin {
 	upsert(source: string, content: string, vector: number[]): Promise<void>;
 	clear?(): Promise<void>;
 	disconnect?(): Promise<void>;
-	setup?(dimensions: number): Promise<void>;
+	setup?(dimensions: number, options?: { force?: boolean }): Promise<void>;
 	isReady?(): Promise<boolean>;
 }
 

@@ -12,6 +12,29 @@ vi.mock("@supabase/supabase-js", () => ({
 	createClient: mockCreateClient,
 }));
 
+vi.mock("node:child_process", () => ({
+	execSync: vi.fn(),
+}));
+
+vi.mock("node:fs", () => ({
+	existsSync: vi.fn().mockReturnValue(true),
+	mkdirSync: vi.fn(),
+	writeFileSync: vi.fn(),
+}));
+
+const mockConsola = {
+	info: vi.fn(),
+	success: vi.fn(),
+	warn: vi.fn(),
+	error: vi.fn(),
+	box: vi.fn(),
+};
+
+vi.mock("consola", () => ({
+	consola: mockConsola,
+	default: mockConsola,
+}));
+
 describe("supabaseVectorStore", () => {
 	beforeEach(() => {
 		vi.clearAllMocks();
@@ -144,5 +167,120 @@ describe("supabaseVectorStore", () => {
 		});
 
 		await expect(store.disconnect?.()).resolves.toBeUndefined();
+	});
+
+	describe("setup", () => {
+		it("creates fresh table when table does not exist", async () => {
+			const mockSelect = vi.fn().mockReturnValue({
+				limit: vi.fn().mockResolvedValue({
+					data: null,
+					error: { message: "relation does not exist" },
+				}),
+			});
+			mockFrom.mockReturnValue({ select: mockSelect });
+
+			const { supabaseVectorStore } = await import("../vector-store.js");
+			const store = supabaseVectorStore({
+				supabaseUrl: "https://abc.supabase.co",
+				supabaseKey: "test-key",
+			});
+
+			await store.setup?.(384);
+
+			const { writeFileSync } = await import("node:fs");
+			const writtenSQL = vi.mocked(writeFileSync).mock.calls[0]?.[1] as string;
+			expect(writtenSQL).toContain("CREATE TABLE IF NOT EXISTS documents");
+			expect(writtenSQL).toContain("VECTOR(384)");
+			expect(writtenSQL).not.toContain("DROP TABLE");
+		});
+
+		it("recreates table when table is empty", async () => {
+			const mockSelect = vi.fn().mockReturnValue({
+				limit: vi.fn().mockResolvedValue({ data: [], error: null }),
+			});
+			mockFrom.mockReturnValue({ select: mockSelect });
+
+			const { supabaseVectorStore } = await import("../vector-store.js");
+			const store = supabaseVectorStore({
+				supabaseUrl: "https://abc.supabase.co",
+				supabaseKey: "test-key",
+			});
+
+			await store.setup?.(768);
+
+			const { writeFileSync } = await import("node:fs");
+			const writtenSQL = vi.mocked(writeFileSync).mock.calls[0]?.[1] as string;
+			expect(writtenSQL).toContain("DROP TABLE IF EXISTS documents");
+			expect(writtenSQL).toContain("VECTOR(768)");
+		});
+
+		it("skips when dimensions already match", async () => {
+			const mockSelect = vi.fn().mockReturnValue({
+				limit: vi.fn().mockResolvedValue({
+					data: [{ vector: "[0.1,0.2,0.3]" }],
+					error: null,
+				}),
+			});
+			mockFrom.mockReturnValue({ select: mockSelect });
+
+			const { supabaseVectorStore } = await import("../vector-store.js");
+			const store = supabaseVectorStore({
+				supabaseUrl: "https://abc.supabase.co",
+				supabaseKey: "test-key",
+			});
+
+			await store.setup?.(3);
+
+			const { writeFileSync } = await import("node:fs");
+			expect(vi.mocked(writeFileSync)).not.toHaveBeenCalled();
+		});
+
+		it("errors on dimension mismatch without --force", async () => {
+			const mockSelect = vi.fn().mockReturnValue({
+				limit: vi.fn().mockResolvedValue({
+					data: [{ vector: "[0.1,0.2,0.3]" }],
+					error: null,
+				}),
+			});
+			mockFrom.mockReturnValue({ select: mockSelect });
+
+			const { supabaseVectorStore } = await import("../vector-store.js");
+			const store = supabaseVectorStore({
+				supabaseUrl: "https://abc.supabase.co",
+				supabaseKey: "test-key",
+			});
+
+			await store.setup?.(768);
+
+			expect(mockConsola.error).toHaveBeenCalledWith(
+				expect.stringContaining("Dimension mismatch"),
+			);
+
+			const { writeFileSync } = await import("node:fs");
+			expect(vi.mocked(writeFileSync)).not.toHaveBeenCalled();
+		});
+
+		it("recreates on dimension mismatch with --force", async () => {
+			const mockSelect = vi.fn().mockReturnValue({
+				limit: vi.fn().mockResolvedValue({
+					data: [{ vector: "[0.1,0.2,0.3]" }],
+					error: null,
+				}),
+			});
+			mockFrom.mockReturnValue({ select: mockSelect });
+
+			const { supabaseVectorStore } = await import("../vector-store.js");
+			const store = supabaseVectorStore({
+				supabaseUrl: "https://abc.supabase.co",
+				supabaseKey: "test-key",
+			});
+
+			await store.setup?.(768, { force: true });
+
+			const { writeFileSync } = await import("node:fs");
+			const writtenSQL = vi.mocked(writeFileSync).mock.calls[0]?.[1] as string;
+			expect(writtenSQL).toContain("DROP TABLE IF EXISTS documents");
+			expect(writtenSQL).toContain("VECTOR(768)");
+		});
 	});
 });
