@@ -145,7 +145,7 @@ const { answer, sources } = await rag.ask("How does authentication work?");
 | Gemini | `@ragpipe/plugin-gemini` | stable |
 | OpenAI | `@ragpipe/plugin-openai` | stable |
 | AWS Bedrock (Claude) | `@ragpipe/plugin-bedrock` | planned |
-| Ollama | `@ragpipe/plugin-ollama` | in-progress |
+| Ollama | `@ragpipe/plugin-ollama` | stable |
 
 ## How It Works
 
