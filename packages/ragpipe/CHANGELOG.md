@@ -1,5 +1,11 @@
 # ragpipe
 
+## 0.5.0
+
+### Minor Changes
+
+- [`3a0aecc`](https://github.com/yungblud/ragpipe/commit/3a0aecc7a3c441131db0767fe8b90c64ab786761) Thanks [@yungblud](https://github.com/yungblud)! - fix support auto load dotenv
+
 ## 0.4.0
 
 ### Minor Changes
