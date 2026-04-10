@@ -1,6 +1,6 @@
 {
 	"name": "ragpipe",
-	"version": "0.7.0-alpha.3",
+	"version": "0.7.0",
 	"description": "Pluggable TypeScript RAG toolkit — defineConfig() one file, embed → search → generate.",
 	"type": "module",
 	"license": "MIT",
