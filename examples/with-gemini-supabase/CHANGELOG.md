@@ -1,5 +1,12 @@
 # @ragpipe/example-gemini-supabase
 
+## 0.0.8
+
+### Patch Changes
+
+- Updated dependencies [[`3a0aecc`](https://github.com/yungblud/ragpipe/commit/3a0aecc7a3c441131db0767fe8b90c64ab786761)]:
+  - ragpipe@0.5.0
+
 ## 0.0.7
 
 ### Patch Changes
