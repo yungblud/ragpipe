@@ -564,7 +564,7 @@ npx ragpipe ask "query"   # → return answer
 ### Phase 2 — Plugin Expansion (1–2 weeks)
 
 - [ ] `@ragpipe/plugin-voyage` — Voyage AI embedding
-- [ ] `@ragpipe/plugin-ollama` — local embedding + generation
+- [x] `@ragpipe/plugin-ollama` — local embedding + generation
 - [x] `@ragpipe/plugin-cloudflare` — Cloudflare Workers AI embedding
 - [ ] `@ragpipe/plugin-bedrock` — AWS Bedrock embedding + generation
 - [ ] `@ragpipe/plugin-openai` — OpenAI embedding + generation
