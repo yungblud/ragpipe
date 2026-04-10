@@ -1,5 +1,12 @@
 # @ragpipe/plugin-gemini
 
+## 1.0.0
+
+### Patch Changes
+
+- Updated dependencies [[`b5359f5`](https://github.com/yungblud/ragpipe/commit/b5359f5e028098e0a1e4664c95fb396d7642d3c6)]:
+  - ragpipe@0.4.0
+
 ## 0.3.0
 
 ### Minor Changes

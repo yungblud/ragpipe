@@ -1,5 +1,11 @@
 # ragpipe
 
+## 0.4.0
+
+### Minor Changes
+
+- [#12](https://github.com/yungblud/ragpipe/pull/12) [`b5359f5`](https://github.com/yungblud/ragpipe/commit/b5359f5e028098e0a1e4664c95fb396d7642d3c6) Thanks [@yungblud](https://github.com/yungblud)! - Support plugin-ollama
+
 ## 0.3.0
 
 ### Minor Changes
