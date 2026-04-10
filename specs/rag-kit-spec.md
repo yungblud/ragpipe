@@ -566,8 +566,8 @@ npx ragpipe ask "query"   # → return answer
 - [ ] `@ragpipe/plugin-voyage` — Voyage AI embedding
 - [x] `@ragpipe/plugin-ollama` — local embedding + generation
 - [x] `@ragpipe/plugin-cloudflare` — Cloudflare Workers AI embedding
-- [ ] `@ragpipe/plugin-bedrock` — AWS Bedrock embedding + generation
-- [ ] `@ragpipe/plugin-openai` — OpenAI embedding + generation
+- [ ] `@ragpipe/plugin-bedrock` — AWS Bedrock embedding + generation (see `specs/plugin-bedrock.md`)
+- [x] `@ragpipe/plugin-openai` — OpenAI embedding + generation
 - [ ] `@ragpipe/plugin-pgvector` — PostgreSQL direct connection
 - [ ] `@ragpipe/plugin-sqlite-vec` — SQLite local vector DB
 
