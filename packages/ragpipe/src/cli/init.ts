@@ -23,6 +23,12 @@ const EMBEDDING_PROVIDERS: ProviderOption[] = [
 		package: "@ragpipe/plugin-cloudflare",
 		importName: "cloudflareEmbedding",
 	},
+	{
+		label: "Ollama (Local)",
+		value: "ollama",
+		package: "@ragpipe/plugin-ollama",
+		importName: "ollamaEmbedding",
+	},
 ];
 
 const VECTORSTORE_PROVIDERS: ProviderOption[] = [
@@ -46,6 +52,12 @@ const GENERATION_PROVIDERS: ProviderOption[] = [
 		value: "cloudflare",
 		package: "@ragpipe/plugin-cloudflare",
 		importName: "cloudflareGeneration",
+	},
+	{
+		label: "Ollama (Local)",
+		value: "ollama",
+		package: "@ragpipe/plugin-ollama",
+		importName: "ollamaGeneration",
 	},
 ];
 
@@ -89,6 +101,8 @@ function generateConfig(
 			);
 		} else if (p.value === "gemini") {
 			lines.push("apiKey: process.env.GEMINI_API_KEY!,");
+		} else if (p.value === "ollama") {
+			// no API key needed
 		} else {
 			lines.push("apiKey: process.env.API_KEY!,");
 		}
@@ -98,10 +112,12 @@ function generateConfig(
 				embedding: {
 					gemini: "gemini-embedding-001",
 					cloudflare: "@cf/qwen/qwen3-embedding-0.6b",
+					ollama: "bge-m3",
 				},
 				generation: {
 					gemini: "gemini-3.1-flash-lite-preview",
 					cloudflare: "@cf/openai/gpt-oss-20b",
+					ollama: "llama3",
 				},
 			};
 			const model = modelDefaults[role]?.[p.value];
@@ -114,6 +130,7 @@ function generateConfig(
 			const dimensionDefaults: Record<string, number> = {
 				gemini: 3072,
 				cloudflare: 768,
+				ollama: 1024,
 			};
 			const dims = dimensionDefaults[p.value];
 			if (dims) {
