@@ -1,12 +1,5 @@
 import type { EmbeddingPlugin } from "ragpipe";
 
-const DIMENSION_MAP: Record<string, number> = {
-	"bge-m3": 1024,
-	"nomic-embed-text": 768,
-	"mxbai-embed-large": 1024,
-	"all-minilm": 384,
-};
-
 export interface OllamaEmbeddingOptions {
 	model: string;
 	baseUrl?: string;
