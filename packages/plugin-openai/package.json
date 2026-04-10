@@ -1,7 +1,7 @@
 {
-	"name": "ragpipe",
-	"version": "0.6.0-alpha.1",
-	"description": "Pluggable TypeScript RAG toolkit — defineConfig() one file, embed → search → generate.",
+	"name": "@ragpipe/plugin-openai",
+	"version": "0.0.1",
+	"description": "OpenAI embedding and generation plugin for ragpipe",
 	"type": "module",
 	"license": "MIT",
 	"author": {
@@ -11,7 +11,7 @@
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/yungblud/ragpipe",
-		"directory": "packages/ragpipe"
+		"directory": "packages/plugin-openai"
 	},
 	"bugs": {
 		"url": "https://github.com/yungblud/ragpipe/issues"
@@ -28,9 +28,6 @@
 			"require": "./dist/index.cjs"
 		}
 	},
-	"bin": {
-		"ragpipe": "./dist/cli.js"
-	},
 	"main": "./dist/index.cjs",
 	"module": "./dist/index.js",
 	"types": "./dist/index.d.ts",
@@ -44,23 +41,21 @@
 		"test:coverage": "vitest run --coverage"
 	},
 	"keywords": [
+		"ragpipe",
 		"rag",
-		"retrieval-augmented-generation",
-		"embeddings",
-		"vector-search",
-		"llm",
-		"ai",
-		"typescript",
+		"openai",
+		"gpt",
+		"embedding",
+		"generation",
 		"plugin"
 	],
+	"peerDependencies": {
+		"ragpipe": ">=0.4.0"
+	},
 	"devDependencies": {
+		"ragpipe": "workspace:*",
 		"tsup": "^8.4.0",
 		"typescript": "^5.8.3",
 		"vitest": "^3.1.1"
-	},
-	"dependencies": {
-		"c12": "^2.0.4",
-		"citty": "^0.1.6",
-		"consola": "^3.4.0"
 	}
 }

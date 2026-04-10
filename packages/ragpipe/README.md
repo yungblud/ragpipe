@@ -106,6 +106,9 @@ Implement any of these to create a custom plugin:
 | Package | Description |
 |---|---|
 | [`@ragpipe/plugin-gemini`](https://www.npmjs.com/package/@ragpipe/plugin-gemini) | Google Gemini embedding + generation |
+| [`@ragpipe/plugin-openai`](https://www.npmjs.com/package/@ragpipe/plugin-openai) | OpenAI embedding + generation |
+| [`@ragpipe/plugin-ollama`](https://www.npmjs.com/package/@ragpipe/plugin-ollama) | Ollama local embedding + generation |
+| [`@ragpipe/plugin-cloudflare`](https://www.npmjs.com/package/@ragpipe/plugin-cloudflare) | Cloudflare Workers AI embedding + generation |
 | [`@ragpipe/plugin-supabase`](https://www.npmjs.com/package/@ragpipe/plugin-supabase) | Supabase pgvector store |
 
 ## License

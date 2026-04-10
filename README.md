@@ -124,9 +124,9 @@ const { answer, sources } = await rag.ask("How does authentication work?");
 | Provider | Package | Status |
 |----------|---------|--------|
 | Gemini | `@ragpipe/plugin-gemini` | stable |
-| OpenAI | `@ragpipe/plugin-openai` | planned |
+| OpenAI | `@ragpipe/plugin-openai` | stable |
 | Voyage AI | `@ragpipe/plugin-voyage` | planned |
-| Ollama | `@ragpipe/plugin-ollama` | in-progress |
+| Ollama | `@ragpipe/plugin-ollama` | stable |
 | Cloudflare Workers AI | `@ragpipe/plugin-cloudflare` | stable |
 | AWS Bedrock | `@ragpipe/plugin-bedrock` | planned |
 
@@ -143,7 +143,7 @@ const { answer, sources } = await rag.ask("How does authentication work?");
 | Provider | Package | Status |
 |----------|---------|--------|
 | Gemini | `@ragpipe/plugin-gemini` | stable |
-| OpenAI | `@ragpipe/plugin-openai` | planned |
+| OpenAI | `@ragpipe/plugin-openai` | stable |
 | AWS Bedrock (Claude) | `@ragpipe/plugin-bedrock` | planned |
 | Ollama | `@ragpipe/plugin-ollama` | in-progress |
 
