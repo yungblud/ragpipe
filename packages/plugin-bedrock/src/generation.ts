@@ -9,10 +9,8 @@ import {
 } from "./client.js";
 import { assertSupportedGenerationModel } from "./helpers.js";
 
-const DEFAULT_MODEL = "anthropic.claude-3-5-haiku-20241022-v1:0";
-
 export interface BedrockGenerationOptions extends BedrockClientOptions {
-	model?: string;
+	model: string;
 	systemPrompt?: string;
 	maxTokens?: number;
 	temperature?: number;
@@ -42,7 +40,7 @@ function extractTextFromConverseOutput(
 export function bedrockGeneration(
 	options: BedrockGenerationOptions,
 ): GenerationPlugin {
-	const model = options.model ?? DEFAULT_MODEL;
+	const model = options.model;
 	const client = createBedrockRuntimeClient(options);
 
 	function buildSystemText(opts?: {

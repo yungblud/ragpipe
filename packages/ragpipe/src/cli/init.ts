@@ -149,7 +149,7 @@ function generateConfig(
 					cloudflare: "@cf/openai/gpt-oss-20b",
 					openai: "gpt-4o-mini",
 					ollama: "llama3",
-					bedrock: "anthropic.claude-3-5-haiku-20241022-v1:0",
+					bedrock: "anthropic.claude-3-haiku-20240307-v1:0",
 				},
 			};
 			const model = modelDefaults[role]?.[p.value];

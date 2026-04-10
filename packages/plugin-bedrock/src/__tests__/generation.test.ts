@@ -45,11 +45,12 @@ async function* streamEvents(chunks: { text?: string; other?: boolean }[]) {
 describe("bedrockGeneration", () => {
 	const plugin = bedrockGeneration({
 		region: "us-east-1",
+		model: "anthropic.claude-3-haiku-20240307-v1:0",
 	});
 
-	it("has correct default metadata", () => {
+	it("has correct metadata", () => {
 		expect(plugin.name).toBe("bedrock");
-		expect(plugin.model).toBe("anthropic.claude-3-5-haiku-20241022-v1:0");
+		expect(plugin.model).toBe("anthropic.claude-3-haiku-20240307-v1:0");
 	});
 
 	it("generates text via Converse", async () => {
@@ -63,7 +64,7 @@ describe("bedrockGeneration", () => {
 		const command = mockSend.mock.calls[0][0];
 		expect(command).toBeInstanceOf(ConverseCommand);
 		expect(command.input.modelId).toBe(
-			"anthropic.claude-3-5-haiku-20241022-v1:0",
+			"anthropic.claude-3-haiku-20240307-v1:0",
 		);
 		expect(command.input.system).toEqual([
 			{ text: "Answer based on the provided context." },
@@ -100,6 +101,7 @@ describe("bedrockGeneration", () => {
 	it("per-call systemPrompt overrides factory option", async () => {
 		const custom = bedrockGeneration({
 			region: "us-east-1",
+			model: "anthropic.claude-3-haiku-20240307-v1:0",
 			systemPrompt: "Factory prompt.",
 		});
 		mockSend.mockResolvedValueOnce(converseResponse("OK"));
@@ -125,6 +127,7 @@ describe("bedrockGeneration", () => {
 	it("uses custom inferenceConfig", async () => {
 		const custom = bedrockGeneration({
 			region: "us-east-1",
+			model: "anthropic.claude-3-haiku-20240307-v1:0",
 			maxTokens: 512,
 			temperature: 0.8,
 			topP: 0.95,

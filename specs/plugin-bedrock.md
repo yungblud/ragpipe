@@ -95,13 +95,13 @@ MVP 기본 모델:
 
 MVP 기본 모델:
 
-- `anthropic.claude-3-5-haiku-20241022-v1:0`
+- `anthropic.claude-3-haiku-20240307-v1:0`
 
 요청 개념 예시:
 
 ```ts
 {
-  modelId: "anthropic.claude-3-5-haiku-20241022-v1:0",
+  modelId: "anthropic.claude-3-haiku-20240307-v1:0",
   system: [{ text: "Answer based on the provided context." }],
   messages: [
     {
@@ -194,7 +194,7 @@ function bedrockEmbedding(options: BedrockEmbeddingOptions): EmbeddingPlugin;
 
 ```ts
 interface BedrockGenerationOptions extends BedrockClientOptions {
-  model?: string; // default: "anthropic.claude-3-5-haiku-20241022-v1:0"
+  model?: string; // default: "anthropic.claude-3-haiku-20240307-v1:0"
   systemPrompt?: string;
   maxTokens?: number;   // default: 1024
   temperature?: number; // default: 0.2
@@ -207,7 +207,7 @@ function bedrockGeneration(options: BedrockGenerationOptions): GenerationPlugin;
 | 필드 | 값 |
 |------|----|
 | `name` | `"bedrock"` |
-| `model` | options.model ?? `"anthropic.claude-3-5-haiku-20241022-v1:0"` |
+| `model` | options.model ?? `"anthropic.claude-3-haiku-20240307-v1:0"` |
 
 ---
 
@@ -234,7 +234,7 @@ MVP에서 공식 지원하는 모델 family:
 
 | 모델 | 상태 | 비고 |
 |------|------|------|
-| `anthropic.claude-3-5-haiku-20241022-v1:0` | MVP | 기본값 |
+| `anthropic.claude-3-haiku-20240307-v1:0` | MVP | 기본값 |
 | `anthropic.claude-3-5-sonnet-20241022-v2:0` | MVP | 고품질 |
 | `anthropic.claude-3-7-sonnet-*` | compatible | Converse 지원 시 동일 경로 |
 
@@ -382,7 +382,7 @@ import {
 } from "@aws-sdk/client-bedrock-runtime";
 import type { GenerationPlugin } from "ragpipe";
 
-const DEFAULT_MODEL = "anthropic.claude-3-5-haiku-20241022-v1:0";
+const DEFAULT_MODEL = "anthropic.claude-3-haiku-20240307-v1:0";
 
 export function bedrockGeneration(
   options: BedrockGenerationOptions,
@@ -673,7 +673,7 @@ export default defineConfig({
   }),
   generation: bedrockGeneration({
     region: "us-east-1",
-    model: "anthropic.claude-3-5-haiku-20241022-v1:0",
+    model: "anthropic.claude-3-haiku-20240307-v1:0",
     systemPrompt: "Answer based on the provided context.",
   }),
 });
@@ -710,7 +710,7 @@ export default defineConfig({
   }),
   generation: bedrockGeneration({
     region: "us-east-1",
-    model: "anthropic.claude-3-5-haiku-20241022-v1:0",
+    model: "anthropic.claude-3-haiku-20240307-v1:0",
   }),
 });
 ```
