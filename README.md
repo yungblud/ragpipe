@@ -123,18 +123,18 @@ const { answer, sources } = await rag.ask("How does authentication work?");
 
 | Provider | Package | Status |
 |----------|---------|--------|
-| Gemini | `@ragpipe/plugin-gemini` | planned |
+| Gemini | `@ragpipe/plugin-gemini` | stable |
 | OpenAI | `@ragpipe/plugin-openai` | planned |
 | Voyage AI | `@ragpipe/plugin-voyage` | planned |
-| Ollama | `@ragpipe/plugin-ollama` | planned |
-| Cloudflare Workers AI | `@ragpipe/plugin-cloudflare` | planned |
+| Ollama | `@ragpipe/plugin-ollama` | in-progress |
+| Cloudflare Workers AI | `@ragpipe/plugin-cloudflare` | stable |
 | AWS Bedrock | `@ragpipe/plugin-bedrock` | planned |
 
 ### Vector Store
 
 | Provider | Package | Status |
 |----------|---------|--------|
-| Supabase (pgvector) | `@ragpipe/plugin-supabase` | planned |
+| Supabase (pgvector) | `@ragpipe/plugin-supabase` | stable |
 | PostgreSQL (pgvector) | `@ragpipe/plugin-pgvector` | planned |
 | SQLite (sqlite-vec) | `@ragpipe/plugin-sqlite-vec` | planned |
 
@@ -142,10 +142,10 @@ const { answer, sources } = await rag.ask("How does authentication work?");
 
 | Provider | Package | Status |
 |----------|---------|--------|
-| Gemini | `@ragpipe/plugin-gemini` | planned |
+| Gemini | `@ragpipe/plugin-gemini` | stable |
 | OpenAI | `@ragpipe/plugin-openai` | planned |
 | AWS Bedrock (Claude) | `@ragpipe/plugin-bedrock` | planned |
-| Ollama | `@ragpipe/plugin-ollama` | planned |
+| Ollama | `@ragpipe/plugin-ollama` | in-progress |
 
 ## How It Works
 
