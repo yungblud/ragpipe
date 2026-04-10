@@ -77,4 +77,41 @@ describe("defaultChunker", () => {
 		expect(chunks).toHaveLength(1);
 		expect(chunks[0].content).toBe(text);
 	});
+
+	it("splits a single long paragraph exceeding chunkSize", () => {
+		const chunker = defaultChunker({ chunkSize: 50, overlap: 0 });
+		const text =
+			"First sentence here. Second sentence here. Third sentence here. Fourth sentence here.";
+		const chunks = chunker.chunk(text, "long.md");
+
+		expect(chunks.length).toBeGreaterThan(1);
+		for (const chunk of chunks) {
+			expect(chunk.content.length).toBeLessThanOrEqual(55);
+		}
+		const joined = chunks.map((c) => c.content).join(" ");
+		expect(joined).toContain("First sentence");
+		expect(joined).toContain("Fourth sentence");
+	});
+
+	it("splits long text without sentence boundaries by word", () => {
+		const chunker = defaultChunker({ chunkSize: 30, overlap: 0 });
+		const text = "abcdefgh ijklmnop qrstuvwx yzabcdef ghijklmn opqrstuv";
+		const chunks = chunker.chunk(text, "words.md");
+
+		expect(chunks.length).toBeGreaterThan(1);
+		for (const chunk of chunks) {
+			expect(chunk.content.length).toBeLessThanOrEqual(35);
+		}
+	});
+
+	it("hard-splits text with no spaces at chunkSize", () => {
+		const chunker = defaultChunker({ chunkSize: 20, overlap: 0 });
+		const text = "a".repeat(50);
+		const chunks = chunker.chunk(text, "nospace.md");
+
+		expect(chunks.length).toBeGreaterThan(1);
+		for (const chunk of chunks) {
+			expect(chunk.content.length).toBeLessThanOrEqual(20);
+		}
+	});
 });
