@@ -1,6 +1,6 @@
 {
 	"name": "@ragpipe/plugin-bedrock",
-	"version": "0.0.1",
+	"version": "0.1.0",
 	"description": "AWS Bedrock embedding and generation plugin for ragpipe",
 	"type": "module",
 	"license": "MIT",
@@ -50,7 +50,7 @@
 		"plugin"
 	],
 	"peerDependencies": {
-		"ragpipe": ">=0.6.0"
+		"ragpipe": ">=0.7.0"
 	},
 	"dependencies": {
 		"@aws-sdk/client-bedrock-runtime": "^3.0.0"
