@@ -194,29 +194,29 @@ packages/plugin-ollama/
 ## 6. 구현 단계
 
 ### Step 1 — 패키지 스캐폴딩
-- [ ] `packages/plugin-ollama/` 생성
-- [ ] `package.json`, `tsconfig.json`, `tsup.config.ts` 설정
-- [ ] `src/index.ts` 엔트리 포인트
+- [x] `packages/plugin-ollama/` 생성
+- [x] `package.json`, `tsconfig.json`, `tsup.config.ts` 설정
+- [x] `src/index.ts` 엔트리 포인트
 
 ### Step 2 — Embedding 구현
-- [ ] `OllamaEmbeddingOptions` 타입 정의
-- [ ] `ollamaEmbedding()` 팩토리 함수
-- [ ] `embed()` — `POST /api/embed` 단일 텍스트
-- [ ] `embedMany()` — 배열 입력 배치 처리
-- [ ] 에러 핸들링 (Ollama 서버 미실행, 모델 미설치 등)
+- [x] `OllamaEmbeddingOptions` 타입 정의
+- [x] `ollamaEmbedding()` 팩토리 함수
+- [x] `embed()` — `POST /api/embed` 단일 텍스트
+- [x] `embedMany()` — 배열 입력 배치 처리
+- [x] 에러 핸들링 (Ollama 서버 미실행, 모델 미설치 등)
 
 ### Step 3 — Generation 구현
-- [ ] `OllamaGenerationOptions` 타입 정의
-- [ ] `ollamaGeneration()` 팩토리 함수
-- [ ] `generate()` — `POST /api/chat` with `stream: false`
-- [ ] `generateStream()` — NDJSON 파싱 + AsyncIterable
-- [ ] system prompt, history 지원
+- [x] `OllamaGenerationOptions` 타입 정의
+- [x] `ollamaGeneration()` 팩토리 함수
+- [x] `generate()` — `POST /api/chat` with `stream: false`
+- [x] `generateStream()` — NDJSON 파싱 + AsyncIterable
+- [x] system prompt, history 지원
 
 ### Step 4 — 빌드/테스트 검증
-- [ ] `pnpm turbo run build` 통과
-- [ ] `pnpm biome check --write` 통과
-- [ ] `pnpm turbo check:type` 통과
-- [ ] 단위 테스트 작성 (vitest, fetch mock)
+- [x] `pnpm turbo run build` 통과
+- [x] `pnpm biome check --write` 통과
+- [x] `pnpm turbo check:type` 통과
+- [x] 단위 테스트 작성 (vitest, fetch mock)
 
 ### Step 5 — 배포 준비
 - [ ] changeset 파일 작성
