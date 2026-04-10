@@ -10,7 +10,7 @@ const DIMENSION_MAP: Record<string, number> = {
 export interface OllamaEmbeddingOptions {
 	model: string;
 	baseUrl?: string;
-	dimensions?: number;
+	dimensions: number;
 }
 
 export function ollamaEmbedding(
@@ -18,7 +18,7 @@ export function ollamaEmbedding(
 ): EmbeddingPlugin {
 	const { model } = options;
 	const baseUrl = options.baseUrl ?? "http://localhost:11434";
-	const dimensions = options.dimensions ?? DIMENSION_MAP[model] ?? 1024;
+	const dimensions = options.dimensions;
 
 	async function callApi(input: string | string[]): Promise<number[][]> {
 		let res: Response;
