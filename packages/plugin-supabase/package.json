@@ -1,6 +1,6 @@
 {
 	"name": "@ragpipe/plugin-supabase",
-	"version": "0.4.0",
+	"version": "0.5.0",
 	"description": "Supabase pgvector vector store plugin for ragpipe",
 	"type": "module",
 	"license": "MIT",
@@ -49,7 +49,7 @@
 		"plugin"
 	],
 	"peerDependencies": {
-		"ragpipe": ">=0.3.0"
+		"ragpipe": ">=0.4.0"
 	},
 	"dependencies": {
 		"@supabase/supabase-js": "^2.49.4",

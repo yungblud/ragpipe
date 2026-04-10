@@ -1,6 +1,6 @@
 {
 	"name": "@ragpipe/plugin-ollama",
-	"version": "0.1.0",
+	"version": "0.2.0",
 	"description": "Ollama local embedding and generation plugin for ragpipe",
 	"type": "module",
 	"license": "MIT",
@@ -50,7 +50,7 @@
 		"plugin"
 	],
 	"peerDependencies": {
-		"ragpipe": ">=0.3.0"
+		"ragpipe": ">=0.4.0"
 	},
 	"devDependencies": {
 		"ragpipe": "workspace:*",
