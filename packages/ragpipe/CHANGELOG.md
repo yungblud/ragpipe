@@ -1,5 +1,11 @@
 # ragpipe
 
+## 0.6.0
+
+### Minor Changes
+
+- [#15](https://github.com/yungblud/ragpipe/pull/15) [`b2b29aa`](https://github.com/yungblud/ragpipe/commit/b2b29aa3dac217ea7aacd1111364d156f81eb75e) Thanks [@yungblud](https://github.com/yungblud)! - Support plugin-openai
+
 ## 0.5.0
 
 ### Minor Changes
