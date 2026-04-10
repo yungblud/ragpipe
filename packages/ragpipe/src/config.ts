@@ -10,6 +10,7 @@ export async function loadConfig(
 ): Promise<RagpipeConfig> {
 	const { config } = await c12LoadConfig<RagpipeConfig>({
 		name: "ragpipe",
+		dotenv: true,
 		defaults: overrides as RagpipeConfig,
 	});
 
