@@ -7,7 +7,10 @@ No API key required. Pair with `@ragpipe/plugin-sqlite-vec` for a fully local RA
 ## Prerequisites
 
 ```bash
-# Install and start Ollama
+# Install Ollama (macOS)
+brew install ollama
+
+# Start Ollama server
 ollama serve
 
 # Pull models
