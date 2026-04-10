@@ -78,7 +78,7 @@ export default defineConfig({
   }),
   generation: bedrockGeneration({
     region: "us-east-1",
-    model: "anthropic.claude-3-5-haiku-20241022-v1:0",
+    model: "anthropic.claude-3-haiku-20240307-v1:0",
   }),
 });
 ```
@@ -128,7 +128,7 @@ const { answer, sources } = await rag.ask("How does authentication work?");
 | Voyage AI | `@ragpipe/plugin-voyage` | planned |
 | Ollama | `@ragpipe/plugin-ollama` | stable |
 | Cloudflare Workers AI | `@ragpipe/plugin-cloudflare` | stable |
-| AWS Bedrock | `@ragpipe/plugin-bedrock` | planned |
+| AWS Bedrock | `@ragpipe/plugin-bedrock` | stable |
 
 ### Vector Store
 
@@ -144,7 +144,7 @@ const { answer, sources } = await rag.ask("How does authentication work?");
 |----------|---------|--------|
 | Gemini | `@ragpipe/plugin-gemini` | stable |
 | OpenAI | `@ragpipe/plugin-openai` | stable |
-| AWS Bedrock (Claude) | `@ragpipe/plugin-bedrock` | planned |
+| AWS Bedrock (Claude) | `@ragpipe/plugin-bedrock` | stable |
 | Ollama | `@ragpipe/plugin-ollama` | stable |
 
 ## How It Works

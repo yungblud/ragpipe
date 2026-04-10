@@ -35,6 +35,12 @@ const EMBEDDING_PROVIDERS: ProviderOption[] = [
 		package: "@ragpipe/plugin-ollama",
 		importName: "ollamaEmbedding",
 	},
+	{
+		label: "AWS Bedrock (Titan)",
+		value: "bedrock",
+		package: "@ragpipe/plugin-bedrock",
+		importName: "bedrockEmbedding",
+	},
 ];
 
 const VECTORSTORE_PROVIDERS: ProviderOption[] = [
@@ -70,6 +76,12 @@ const GENERATION_PROVIDERS: ProviderOption[] = [
 		value: "ollama",
 		package: "@ragpipe/plugin-ollama",
 		importName: "ollamaGeneration",
+	},
+	{
+		label: "AWS Bedrock (Claude)",
+		value: "bedrock",
+		package: "@ragpipe/plugin-bedrock",
+		importName: "bedrockGeneration",
 	},
 ];
 
@@ -117,6 +129,8 @@ function generateConfig(
 			lines.push("apiKey: process.env.OPENAI_API_KEY!,");
 		} else if (p.value === "ollama") {
 			// no API key needed
+		} else if (p.value === "bedrock") {
+			lines.push('region: process.env.AWS_REGION ?? "us-east-1",');
 		} else {
 			lines.push("apiKey: process.env.API_KEY!,");
 		}
@@ -128,12 +142,14 @@ function generateConfig(
 					cloudflare: "@cf/qwen/qwen3-embedding-0.6b",
 					openai: "text-embedding-3-small",
 					ollama: "bge-m3",
+					bedrock: "amazon.titan-embed-text-v2:0",
 				},
 				generation: {
 					gemini: "gemini-3.1-flash-lite-preview",
 					cloudflare: "@cf/openai/gpt-oss-20b",
 					openai: "gpt-4o-mini",
 					ollama: "llama3",
+					bedrock: "anthropic.claude-3-haiku-20240307-v1:0",
 				},
 			};
 			const model = modelDefaults[role]?.[p.value];
@@ -148,6 +164,7 @@ function generateConfig(
 				cloudflare: 768,
 				openai: 1536,
 				ollama: 1024,
+				bedrock: 1024,
 			};
 			const dims = dimensionDefaults[p.value];
 			if (dims) {

@@ -126,7 +126,7 @@ export default defineConfig({
   }),
   generation: bedrockGeneration({
     region: "us-east-1",
-    model: "anthropic.claude-3-5-haiku-20241022-v1:0",
+    model: "anthropic.claude-3-haiku-20240307-v1:0",
   }),
 });
 ```
@@ -566,8 +566,8 @@ npx ragpipe ask "query"   # → return answer
 - [ ] `@ragpipe/plugin-voyage` — Voyage AI embedding
 - [x] `@ragpipe/plugin-ollama` — local embedding + generation
 - [x] `@ragpipe/plugin-cloudflare` — Cloudflare Workers AI embedding
-- [ ] `@ragpipe/plugin-bedrock` — AWS Bedrock embedding + generation
-- [ ] `@ragpipe/plugin-openai` — OpenAI embedding + generation
+- [x] `@ragpipe/plugin-bedrock` — AWS Bedrock embedding + generation (see `specs/plugin-bedrock.md`)
+- [x] `@ragpipe/plugin-openai` — OpenAI embedding + generation
 - [ ] `@ragpipe/plugin-pgvector` — PostgreSQL direct connection
 - [ ] `@ragpipe/plugin-sqlite-vec` — SQLite local vector DB
 
