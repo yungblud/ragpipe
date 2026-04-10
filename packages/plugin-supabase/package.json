@@ -1,6 +1,6 @@
 {
 	"name": "@ragpipe/plugin-supabase",
-	"version": "1.0.0",
+	"version": "0.5.0",
 	"description": "Supabase pgvector vector store plugin for ragpipe",
 	"type": "module",
 	"license": "MIT",

@@ -6,8 +6,8 @@
 
 - Updated dependencies [[`b5359f5`](https://github.com/yungblud/ragpipe/commit/b5359f5e028098e0a1e4664c95fb396d7642d3c6)]:
   - ragpipe@0.4.0
-  - @ragpipe/plugin-gemini@1.0.0
-  - @ragpipe/plugin-supabase@1.0.0
+  - @ragpipe/plugin-gemini@0.4.0
+  - @ragpipe/plugin-supabase@0.5.0
 
 ## 0.0.6
 
