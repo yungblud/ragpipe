@@ -1,8 +1,8 @@
 # @ragpipe/plugin-supabase
 
-## 1.0.0
+## 0.5.0
 
-### Patch Changes
+### Minor Changes
 
 - Updated dependencies [[`b5359f5`](https://github.com/yungblud/ragpipe/commit/b5359f5e028098e0a1e4664c95fb396d7642d3c6)]:
   - ragpipe@0.4.0
