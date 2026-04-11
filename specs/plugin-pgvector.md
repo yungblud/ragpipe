@@ -370,10 +370,10 @@ export function pgVectorStore(options: PgVectorStoreOptions): VectorStorePlugin 
 
 ### Step 1 — 패키지 스캐폴딩
 
-- [ ] `packages/plugin-pgvector/` 생성
-- [ ] `package.json`, `tsconfig.json`, `tsup.config.ts` 설정
-- [ ] `src/index.ts` 엔트리 포인트 작성
-- [ ] `pnpm install`로 workspace 연결
+- [x] `packages/plugin-pgvector/` 생성
+- [x] `package.json`, `tsconfig.json`, `tsup.config.ts` 설정
+- [x] `src/index.ts` 엔트리 포인트 작성
+- [x] `pnpm install`로 workspace 연결
 
 ### Step 2 — SQL helpers 작성
 
