@@ -44,3 +44,16 @@
 - Verified `pnpm --filter @ragpipe/plugin-pgvector test`
 - Verified `pnpm --filter @ragpipe/plugin-pgvector typecheck`
 - Verified `pnpm --filter @ragpipe/plugin-pgvector build`
+
+## Step 4 - Test Hardening
+
+- [x] Compare current coverage against `specs/plugin-pgvector.md`
+- [x] Add missing unit tests for custom schema/table coverage
+- [x] Add missing unit tests for query error propagation
+- [x] Verify `test`, `typecheck`, and `build`
+
+- Added explicit test coverage for custom `schema` and `tableName` in `search()` and `setup()`
+- Added explicit error propagation tests for `search()`, `upsert()`, and `clear()`
+- Verified `pnpm --filter @ragpipe/plugin-pgvector test`
+- Verified `pnpm --filter @ragpipe/plugin-pgvector typecheck`
+- Verified `pnpm --filter @ragpipe/plugin-pgvector build`

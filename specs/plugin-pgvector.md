@@ -389,10 +389,10 @@ export function pgVectorStore(options: PgVectorStoreOptions): VectorStorePlugin 
 
 ### Step 4 — 테스트
 
-- [ ] `vector-store.test.ts` 작성
-- [ ] `pnpm turbo run build --filter=@ragpipe/plugin-pgvector`
-- [ ] `pnpm turbo run typecheck --filter=@ragpipe/plugin-pgvector`
-- [ ] `pnpm turbo run test --filter=@ragpipe/plugin-pgvector`
+- [x] `vector-store.test.ts` 작성
+- [x] `pnpm turbo run build --filter=@ragpipe/plugin-pgvector`
+- [x] `pnpm turbo run typecheck --filter=@ragpipe/plugin-pgvector`
+- [x] `pnpm turbo run test --filter=@ragpipe/plugin-pgvector`
 
 ### Step 5 — CLI init 연동 + 문서
 

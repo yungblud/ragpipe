@@ -62,6 +62,35 @@ describe("pgVectorStore", () => {
 		]);
 	});
 
+	it("uses custom schema and table name in search queries", async () => {
+		mockQuery.mockResolvedValueOnce({ rows: [] });
+
+		const { pgVectorStore } = await import("../vector-store.js");
+		const store = pgVectorStore({
+			connectionString: "postgresql://localhost/db",
+			schema: "rag",
+			tableName: "knowledge_base",
+		});
+
+		await store.search([0.1], 3);
+
+		expect(mockQuery).toHaveBeenCalledWith(
+			expect.stringContaining("FROM rag.knowledge_base"),
+			["[0.1]", 3],
+		);
+	});
+
+	it("propagates search query errors", async () => {
+		mockQuery.mockRejectedValueOnce(new Error("search failed"));
+
+		const { pgVectorStore } = await import("../vector-store.js");
+		const store = pgVectorStore({
+			connectionString: "postgresql://localhost/db",
+		});
+
+		await expect(store.search([0.1], 5)).rejects.toThrow("search failed");
+	});
+
 	it("upserts with conflict target and vector string", async () => {
 		mockQuery.mockResolvedValueOnce({ rows: [] });
 
@@ -82,6 +111,19 @@ describe("pgVectorStore", () => {
 		);
 	});
 
+	it("propagates upsert query errors", async () => {
+		mockQuery.mockRejectedValueOnce(new Error("upsert failed"));
+
+		const { pgVectorStore } = await import("../vector-store.js");
+		const store = pgVectorStore({
+			connectionString: "postgresql://localhost/db",
+		});
+
+		await expect(store.upsert("doc.md", "hello", [1, 2])).rejects.toThrow(
+			"upsert failed",
+		);
+	});
+
 	it("clears with truncate", async () => {
 		mockQuery.mockResolvedValueOnce({ rows: [] });
 
@@ -93,6 +135,17 @@ describe("pgVectorStore", () => {
 		await store.clear?.();
 
 		expect(mockQuery).toHaveBeenCalledWith("TRUNCATE public.documents");
+	});
+
+	it("propagates clear query errors", async () => {
+		mockQuery.mockRejectedValueOnce(new Error("clear failed"));
+
+		const { pgVectorStore } = await import("../vector-store.js");
+		const store = pgVectorStore({
+			connectionString: "postgresql://localhost/db",
+		});
+
+		await expect(store.clear?.()).rejects.toThrow("clear failed");
 	});
 
 	it("disconnects pool", async () => {
@@ -230,6 +283,31 @@ describe("pgVectorStore", () => {
 
 			await expect(store.setup?.(384)).rejects.toThrow(
 				"Install the pgvector extension on the database first.",
+			);
+		});
+
+		it("uses custom schema and table name in setup queries", async () => {
+			mockQuery
+				.mockResolvedValueOnce({ rows: [{ "?column?": 1 }] })
+				.mockResolvedValueOnce({ rows: [{ count: 0 }] })
+				.mockResolvedValueOnce({ rows: [] });
+
+			const { pgVectorStore } = await import("../vector-store.js");
+			const store = pgVectorStore({
+				connectionString: "postgresql://localhost/db",
+				schema: "rag",
+				tableName: "knowledge_base",
+			});
+
+			await store.setup?.(384);
+
+			expect(mockQuery).toHaveBeenNthCalledWith(
+				2,
+				"SELECT COUNT(*)::int AS count FROM rag.knowledge_base",
+			);
+			expect(mockQuery).toHaveBeenNthCalledWith(
+				3,
+				expect.stringContaining("DROP TABLE IF EXISTS rag.knowledge_base"),
 			);
 		});
 	});
