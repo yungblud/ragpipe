@@ -377,8 +377,8 @@ export function pgVectorStore(options: PgVectorStoreOptions): VectorStorePlugin 
 
 ### Step 2 — SQL helpers 작성
 
-- [ ] `sql.ts` 작성 (validateIdentifier, generateSetupSQL, generateRecreateSQL, parseVectorDimension)
-- [ ] `sql.test.ts` 작성
+- [x] `sql.ts` 작성 (validateIdentifier, generateSetupSQL, generateRecreateSQL, parseVectorDimension)
+- [x] `sql.test.ts` 작성
 
 ### Step 3 — VectorStore 구현
 

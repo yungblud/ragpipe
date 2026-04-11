@@ -16,3 +16,17 @@
 - Ran `pnpm install --force` to wire workspace dependencies and update `pnpm-lock.yaml`
 - Verified `pnpm --filter @ragpipe/plugin-pgvector typecheck`
 - Verified `pnpm --filter @ragpipe/plugin-pgvector build`
+
+## Step 2 - SQL Helpers
+
+- [x] Confirm Step 2 scope from `specs/plugin-pgvector.md`
+- [x] Add `packages/plugin-pgvector/src/sql.ts`
+- [x] Add `packages/plugin-pgvector/src/__tests__/sql.test.ts`
+- [x] Export SQL helpers from package entrypoint
+- [x] Verify `test`, `typecheck`, and `build`
+
+- Added identifier validation, setup SQL generation, recreate SQL generation, and vector dimension parsing
+- Added SQL unit tests covering valid/invalid identifiers, DDL generation, and vector parsing
+- Verified `pnpm --filter @ragpipe/plugin-pgvector test`
+- Verified `pnpm --filter @ragpipe/plugin-pgvector typecheck`
+- Verified `pnpm --filter @ragpipe/plugin-pgvector build`
