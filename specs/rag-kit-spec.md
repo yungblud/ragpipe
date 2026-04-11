@@ -568,7 +568,7 @@ npx ragpipe ask "query"   # → return answer
 - [x] `@ragpipe/plugin-cloudflare` — Cloudflare Workers AI embedding
 - [x] `@ragpipe/plugin-bedrock` — AWS Bedrock embedding + generation (see `specs/plugin-bedrock.md`)
 - [x] `@ragpipe/plugin-openai` — OpenAI embedding + generation
-- [ ] `@ragpipe/plugin-pgvector` — PostgreSQL direct connection
+- [x] `@ragpipe/plugin-pgvector` — PostgreSQL direct connection
 - [ ] `@ragpipe/plugin-sqlite-vec` — SQLite local vector DB
 
 ### Phase 3 — Advanced Features (2–4 weeks)

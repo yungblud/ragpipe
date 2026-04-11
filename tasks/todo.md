@@ -1,5 +1,67 @@
 # Todo
 
+## Step 6 - Plugin Sqlite Vec Branch Setup
+
+- [x] Review `specs/rag-kit-spec.md` and current branch conventions for `@ragpipe/plugin-sqlite-vec`
+- [x] Switch to the implementation branch for `@ragpipe/plugin-sqlite-vec`
+- [x] Verify current workspace changes are preserved after switching
+
+## Review
+
+- Chose `feat/plugin-sqlite-vec` to match existing branch naming such as `feat/plugin-pgvector` and `feat/plugin-bedrock`
+- Switched from `main` to `feat/plugin-sqlite-vec`
+- Verified existing workspace changes in `README.md` and `specs/rag-kit-spec.md` remained intact after switching
+
+## Step 7 - Plugin Sqlite Vec Detailed Plan
+
+- [ ] Confirm implementation target from `specs/rag-kit-spec.md` and align API with existing VectorStore plugins
+- [ ] Decide package shape and dependency strategy for `packages/plugin-sqlite-vec/`
+- [ ] Define the sqlite schema, vector storage format, and retrieval query strategy
+- [ ] Scaffold `packages/plugin-sqlite-vec/` with `package.json`, `tsconfig.json`, `tsup.config.ts`, and `src/index.ts`
+- [ ] Implement vector formatting/parsing and any SQL helper utilities in `src/sql.ts` if needed
+- [ ] Implement `sqliteVectorStore(options)` in `src/vector-store.ts`
+- [ ] Support `search(vector, topK)` with deterministic similarity ordering and `SearchResult` mapping
+- [ ] Support `upsert(source, content, vector)` with stable conflict handling matching other stores
+- [ ] Support `clear()` and `disconnect()` for local database lifecycle management
+- [ ] Support `setup(dimensions, { force? })` and `isReady()` if core/CLI currently depends on them
+- [ ] Validate dimension mismatch behavior against the spec's vector dimension guidance
+- [ ] Add unit tests for schema/setup, search ordering, upsert semantics, clear/disconnect, and dimension mismatch
+- [ ] Verify package-level `test`, `typecheck`, and `build`
+- [ ] Add `@ragpipe/plugin-sqlite-vec` to `packages/ragpipe/src/cli/init.ts`
+- [ ] Ensure generated `ragpipe.config.ts` uses `sqliteVectorStore({ path: "./rag.db" })`
+- [ ] Add package README with install, local setup expectations, API, and example usage
+- [ ] Add or update `examples/with-ollama-sqlite/` if the example is missing or stale
+- [ ] Add a changeset covering the new package and any CLI/example updates
+- [ ] Run affected verification for `@ragpipe/plugin-sqlite-vec` and `ragpipe`
+
+## Step 7 Spec Notes
+
+- Package name: `@ragpipe/plugin-sqlite-vec`
+- Primary constructor: `sqliteVectorStore({ path: "./rag.db" })`
+- Behavior target: local VectorStore plugin for the fully local Ollama + SQLite stack
+- API parity target: follow `plugin-pgvector` shape where practical so CLI/core integration stays predictable
+- Verification target: prove the package builds, typechecks, and its local search/upsert behavior is covered by tests
+
+## Step 7 Open Design Decisions
+
+- [x] Choose sqlite driver and extension strategy:
+- Decision: MVP will avoid a hard dependency on the `sqlite-vec` extension and use a simpler local sqlite storage/search strategy first
+- [ ] Choose the concrete sqlite driver package that best fits local file-based usage and bundling constraints
+- [x] Decide how vectors are stored:
+- Decision: store vectors in sqlite rows using a simple serialized format suitable for local retrieval in MVP, then compute similarity in plugin code after loading candidate rows
+- [ ] Decide setup responsibility:
+- Plugin-local automatic table creation is preferred over external migration steps because this is a local-first store
+- [ ] Decide dimension validation source:
+- Reuse stored row data or metadata table to detect incompatible dimensions during `setup()`
+
+## Step 7 MVP Strategy
+
+- Use sqlite as the persistence layer only for the first pass
+- Persist `source`, `content`, `content_hash`, and serialized `vector` in a local table
+- Perform similarity scoring in plugin code for MVP after reading rows from sqlite
+- Keep the public API named `sqliteVectorStore` so a future true `sqlite-vec` backend can preserve consumer-facing config
+- Treat this as the simplest path to a working fully local stack, not the final optimized implementation
+
 ## Step 1 - Plugin Pgvector Scaffolding
 
 - [x] Review `specs/plugin-pgvector.md` and existing plugin package conventions
