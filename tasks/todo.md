@@ -25,8 +25,8 @@
 - [x] Support `clear()` and `disconnect()` for local database lifecycle management
 - [x] Support `setup(dimensions, { force? })` and `isReady()` if core/CLI currently depends on them
 - [x] Validate dimension mismatch behavior against the spec's vector dimension guidance
-- [ ] Add unit tests for schema/setup, search ordering, upsert semantics, clear/disconnect, and dimension mismatch
-- [ ] Verify package-level `test`, `typecheck`, and `build`
+- [x] Add unit tests for schema/setup, search ordering, upsert semantics, clear/disconnect, and dimension mismatch
+- [x] Verify package-level `test`, `typecheck`, and `build`
 - [ ] Add `@ragpipe/plugin-sqlite-vec` to `packages/ragpipe/src/cli/init.ts`
 - [ ] Ensure generated `ragpipe.config.ts` uses `sqliteVectorStore({ path: "./rag.db" })`
 - [ ] Add package README with install, local setup expectations, API, and example usage
@@ -70,6 +70,10 @@
 - Added `src/sql.ts` with identifier validation, vector serialization/parsing, content hashing, cosine similarity, and schema SQL helpers
 - Added `src/vector-store.ts` with `search`, `upsert`, `clear`, `disconnect`, `isReady`, and `setup` for the local sqlite MVP
 - Stored configured dimensions in a metadata table so setup can reject mismatched embeddings without silently corrupting search behavior
+- Added unit tests for SQL helpers plus mocked `better-sqlite3` store behavior covering setup, deterministic search ordering, upsert conflict semantics, clear/disconnect, readiness checks, and dimension mismatch failures
+- Verified `pnpm --filter @ragpipe/plugin-sqlite-vec test`
+- Verified `pnpm --filter @ragpipe/plugin-sqlite-vec typecheck`
+- Verified `pnpm --filter @ragpipe/plugin-sqlite-vec build`
 
 ## Step 1 - Plugin Pgvector Scaffolding
 
