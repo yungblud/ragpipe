@@ -382,10 +382,10 @@ export function pgVectorStore(options: PgVectorStoreOptions): VectorStorePlugin 
 
 ### Step 3 — VectorStore 구현
 
-- [ ] `PgVectorStoreOptions` 타입 정의
-- [ ] `pgVectorStore()` 팩토리 함수 작성
-- [ ] `search()`, `upsert()`, `clear()`, `disconnect()` 구현
-- [ ] `isReady()`, `setup()` 구현
+- [x] `PgVectorStoreOptions` 타입 정의
+- [x] `pgVectorStore()` 팩토리 함수 작성
+- [x] `search()`, `upsert()`, `clear()`, `disconnect()` 구현
+- [x] `isReady()`, `setup()` 구현
 
 ### Step 4 — 테스트
 

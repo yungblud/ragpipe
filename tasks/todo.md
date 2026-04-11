@@ -30,3 +30,17 @@
 - Verified `pnpm --filter @ragpipe/plugin-pgvector test`
 - Verified `pnpm --filter @ragpipe/plugin-pgvector typecheck`
 - Verified `pnpm --filter @ragpipe/plugin-pgvector build`
+
+## Step 3 - Vector Store
+
+- [x] Confirm Step 3 scope from `specs/plugin-pgvector.md`
+- [x] Implement `packages/plugin-pgvector/src/vector-store.ts`
+- [x] Add `packages/plugin-pgvector/src/__tests__/vector-store.test.ts`
+- [x] Verify `test`, `typecheck`, and `build`
+
+- Implemented `pg.Pool`-backed `search`, `upsert`, `clear`, `disconnect`, `isReady`, and `setup`
+- Added setup logic for fresh table creation, empty-table recreate, force recreate, and dimension mismatch checks
+- Added unit tests for query payloads, setup branching, connection options, and setup error guidance
+- Verified `pnpm --filter @ragpipe/plugin-pgvector test`
+- Verified `pnpm --filter @ragpipe/plugin-pgvector typecheck`
+- Verified `pnpm --filter @ragpipe/plugin-pgvector build`
