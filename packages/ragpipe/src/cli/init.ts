@@ -56,6 +56,12 @@ const VECTORSTORE_PROVIDERS: ProviderOption[] = [
 		package: "@ragpipe/plugin-pgvector",
 		importName: "pgVectorStore",
 	},
+	{
+		label: "SQLite (Local)",
+		value: "sqlite",
+		package: "@ragpipe/plugin-sqlite-vec",
+		importName: "sqliteVectorStore",
+	},
 ];
 
 const GENERATION_PROVIDERS: ProviderOption[] = [
@@ -131,6 +137,8 @@ function generateConfig(
 			);
 		} else if (p.value === "pgvector") {
 			lines.push("connectionString: process.env.DATABASE_URL!,");
+		} else if (p.value === "sqlite") {
+			lines.push('path: "./rag.db",');
 		} else if (p.value === "gemini") {
 			lines.push("apiKey: process.env.GEMINI_API_KEY!,");
 		} else if (p.value === "openai") {

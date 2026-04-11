@@ -27,7 +27,7 @@
 - [x] Validate dimension mismatch behavior against the spec's vector dimension guidance
 - [x] Add unit tests for schema/setup, search ordering, upsert semantics, clear/disconnect, and dimension mismatch
 - [x] Verify package-level `test`, `typecheck`, and `build`
-- [ ] Add `@ragpipe/plugin-sqlite-vec` to `packages/ragpipe/src/cli/init.ts`
+- [x] Add `@ragpipe/plugin-sqlite-vec` to `packages/ragpipe/src/cli/init.ts`
 - [ ] Ensure generated `ragpipe.config.ts` uses `sqliteVectorStore({ path: "./rag.db" })`
 - [ ] Add package README with install, local setup expectations, API, and example usage
 - [ ] Add or update `examples/with-ollama-sqlite/` if the example is missing or stale
@@ -74,6 +74,7 @@
 - Verified `pnpm --filter @ragpipe/plugin-sqlite-vec test`
 - Verified `pnpm --filter @ragpipe/plugin-sqlite-vec typecheck`
 - Verified `pnpm --filter @ragpipe/plugin-sqlite-vec build`
+- Added `SQLite (Local)` as a VectorStore option in `packages/ragpipe/src/cli/init.ts`
 
 ## Step 1 - Plugin Pgvector Scaffolding
 
