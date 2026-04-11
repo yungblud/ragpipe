@@ -14,10 +14,10 @@
 
 ## Step 7 - Plugin Sqlite Vec Detailed Plan
 
-- [ ] Confirm implementation target from `specs/rag-kit-spec.md` and align API with existing VectorStore plugins
-- [ ] Decide package shape and dependency strategy for `packages/plugin-sqlite-vec/`
-- [ ] Define the sqlite schema, vector storage format, and retrieval query strategy
-- [ ] Scaffold `packages/plugin-sqlite-vec/` with `package.json`, `tsconfig.json`, `tsup.config.ts`, and `src/index.ts`
+- [x] Confirm implementation target from `specs/rag-kit-spec.md` and align API with existing VectorStore plugins
+- [x] Decide package shape and dependency strategy for `packages/plugin-sqlite-vec/`
+- [x] Define the sqlite schema, vector storage format, and retrieval query strategy
+- [x] Scaffold `packages/plugin-sqlite-vec/` with `package.json`, `tsconfig.json`, `tsup.config.ts`, and `src/index.ts`
 - [ ] Implement vector formatting/parsing and any SQL helper utilities in `src/sql.ts` if needed
 - [ ] Implement `sqliteVectorStore(options)` in `src/vector-store.ts`
 - [ ] Support `search(vector, topK)` with deterministic similarity ordering and `SearchResult` mapping
@@ -61,6 +61,12 @@
 - Perform similarity scoring in plugin code for MVP after reading rows from sqlite
 - Keep the public API named `sqliteVectorStore` so a future true `sqlite-vec` backend can preserve consumer-facing config
 - Treat this as the simplest path to a working fully local stack, not the final optimized implementation
+
+## Step 7 Progress Notes
+
+- Added `packages/plugin-sqlite-vec/` package scaffolding matching other vector store plugins
+- Captured the MVP schema and retrieval strategy in `src/index.ts` as exported constants for follow-up implementation
+- Kept the public constructor as `sqliteVectorStore(options)` so the next step can move logic into `src/vector-store.ts` without changing consumer API
 
 ## Step 1 - Plugin Pgvector Scaffolding
 
