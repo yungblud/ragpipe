@@ -50,6 +50,12 @@ const VECTORSTORE_PROVIDERS: ProviderOption[] = [
 		package: "@ragpipe/plugin-supabase",
 		importName: "supabaseVectorStore",
 	},
+	{
+		label: "PostgreSQL (pgvector direct)",
+		value: "pgvector",
+		package: "@ragpipe/plugin-pgvector",
+		importName: "pgVectorStore",
+	},
 ];
 
 const GENERATION_PROVIDERS: ProviderOption[] = [
@@ -123,6 +129,8 @@ function generateConfig(
 				"supabaseUrl: process.env.SUPABASE_URL!,",
 				"supabaseKey: process.env.SUPABASE_SERVICE_ROLE_KEY!,",
 			);
+		} else if (p.value === "pgvector") {
+			lines.push("connectionString: process.env.DATABASE_URL!,");
 		} else if (p.value === "gemini") {
 			lines.push("apiKey: process.env.GEMINI_API_KEY!,");
 		} else if (p.value === "openai") {

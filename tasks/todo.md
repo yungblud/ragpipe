@@ -57,3 +57,22 @@
 - Verified `pnpm --filter @ragpipe/plugin-pgvector test`
 - Verified `pnpm --filter @ragpipe/plugin-pgvector typecheck`
 - Verified `pnpm --filter @ragpipe/plugin-pgvector build`
+
+## Step 5 - CLI And Docs
+
+- [x] Confirm Step 5 scope from `specs/plugin-pgvector.md`
+- [x] Add pgvector provider support to `packages/ragpipe/src/cli/init.ts`
+- [x] Replace placeholder `packages/plugin-pgvector/README.md`
+- [x] Add a changeset for the new package and CLI update
+- [x] Verify affected packages
+
+- Added `PostgreSQL (pgvector direct)` as a VectorStore option in `ragpipe init`
+- Updated generated config so pgvector uses `connectionString: process.env.DATABASE_URL!`
+- Replaced the placeholder pgvector README with install, usage, API, setup, and example documentation
+- Added `.changeset/forty-bees-whisper.md` covering the new plugin and `ragpipe init` update
+- Verified `pnpm --filter @ragpipe/plugin-pgvector test`
+- Verified `pnpm --filter @ragpipe/plugin-pgvector typecheck`
+- Verified `pnpm --filter @ragpipe/plugin-pgvector build`
+- Verified `pnpm --filter ragpipe test`
+- Verified `pnpm --filter ragpipe typecheck`
+- Verified `pnpm --filter ragpipe build`

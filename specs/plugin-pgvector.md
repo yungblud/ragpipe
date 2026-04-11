@@ -396,9 +396,9 @@ export function pgVectorStore(options: PgVectorStoreOptions): VectorStorePlugin 
 
 ### Step 5 — CLI init 연동 + 문서
 
-- [ ] `packages/ragpipe/src/cli/init.ts`에 pgvector provider 추가
-- [ ] `packages/plugin-pgvector/README.md` 작성
-- [ ] changeset 파일 작성
+- [x] `packages/ragpipe/src/cli/init.ts`에 pgvector provider 추가
+- [x] `packages/plugin-pgvector/README.md` 작성
+- [x] changeset 파일 작성
 
 ---
 
