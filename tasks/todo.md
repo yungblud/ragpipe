@@ -18,13 +18,13 @@
 - [x] Decide package shape and dependency strategy for `packages/plugin-sqlite-vec/`
 - [x] Define the sqlite schema, vector storage format, and retrieval query strategy
 - [x] Scaffold `packages/plugin-sqlite-vec/` with `package.json`, `tsconfig.json`, `tsup.config.ts`, and `src/index.ts`
-- [ ] Implement vector formatting/parsing and any SQL helper utilities in `src/sql.ts` if needed
-- [ ] Implement `sqliteVectorStore(options)` in `src/vector-store.ts`
-- [ ] Support `search(vector, topK)` with deterministic similarity ordering and `SearchResult` mapping
-- [ ] Support `upsert(source, content, vector)` with stable conflict handling matching other stores
-- [ ] Support `clear()` and `disconnect()` for local database lifecycle management
-- [ ] Support `setup(dimensions, { force? })` and `isReady()` if core/CLI currently depends on them
-- [ ] Validate dimension mismatch behavior against the spec's vector dimension guidance
+- [x] Implement vector formatting/parsing and any SQL helper utilities in `src/sql.ts` if needed
+- [x] Implement `sqliteVectorStore(options)` in `src/vector-store.ts`
+- [x] Support `search(vector, topK)` with deterministic similarity ordering and `SearchResult` mapping
+- [x] Support `upsert(source, content, vector)` with stable conflict handling matching other stores
+- [x] Support `clear()` and `disconnect()` for local database lifecycle management
+- [x] Support `setup(dimensions, { force? })` and `isReady()` if core/CLI currently depends on them
+- [x] Validate dimension mismatch behavior against the spec's vector dimension guidance
 - [ ] Add unit tests for schema/setup, search ordering, upsert semantics, clear/disconnect, and dimension mismatch
 - [ ] Verify package-level `test`, `typecheck`, and `build`
 - [ ] Add `@ragpipe/plugin-sqlite-vec` to `packages/ragpipe/src/cli/init.ts`
@@ -67,6 +67,9 @@
 - Added `packages/plugin-sqlite-vec/` package scaffolding matching other vector store plugins
 - Captured the MVP schema and retrieval strategy in `src/index.ts` as exported constants for follow-up implementation
 - Kept the public constructor as `sqliteVectorStore(options)` so the next step can move logic into `src/vector-store.ts` without changing consumer API
+- Added `src/sql.ts` with identifier validation, vector serialization/parsing, content hashing, cosine similarity, and schema SQL helpers
+- Added `src/vector-store.ts` with `search`, `upsert`, `clear`, `disconnect`, `isReady`, and `setup` for the local sqlite MVP
+- Stored configured dimensions in a metadata table so setup can reject mismatched embeddings without silently corrupting search behavior
 
 ## Step 1 - Plugin Pgvector Scaffolding
 

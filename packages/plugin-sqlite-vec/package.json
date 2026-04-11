@@ -44,7 +44,11 @@
 	"peerDependencies": {
 		"ragpipe": ">=0.8.0"
 	},
+	"dependencies": {
+		"better-sqlite3": "^11.10.0"
+	},
 	"devDependencies": {
+		"@types/node": "^25.5.2",
 		"ragpipe": "workspace:*",
 		"tsup": "^8.4.0",
 		"typescript": "^5.8.3",
