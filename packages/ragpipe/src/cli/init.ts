@@ -30,6 +30,12 @@ const EMBEDDING_PROVIDERS: ProviderOption[] = [
 		importName: "openaiEmbedding",
 	},
 	{
+		label: "Voyage AI",
+		value: "voyage",
+		package: "@ragpipe/plugin-voyage",
+		importName: "voyageEmbedding",
+	},
+	{
 		label: "Ollama (Local)",
 		value: "ollama",
 		package: "@ragpipe/plugin-ollama",
@@ -144,6 +150,8 @@ function generateConfig(
 			lines.push("apiKey: process.env.GEMINI_API_KEY!,");
 		} else if (p.value === "openai") {
 			lines.push("apiKey: process.env.OPENAI_API_KEY!,");
+		} else if (p.value === "voyage") {
+			lines.push("apiKey: process.env.VOYAGE_API_KEY!,");
 		} else if (p.value === "ollama") {
 			// no API key needed
 		} else if (p.value === "bedrock") {
@@ -158,6 +166,7 @@ function generateConfig(
 					gemini: "gemini-embedding-001",
 					cloudflare: "@cf/qwen/qwen3-embedding-0.6b",
 					openai: "text-embedding-3-small",
+					voyage: "voyage-4-lite",
 					ollama: "bge-m3",
 					bedrock: "amazon.titan-embed-text-v2:0",
 				},
@@ -180,6 +189,7 @@ function generateConfig(
 				gemini: 3072,
 				cloudflare: 768,
 				openai: 1536,
+				voyage: 1024,
 				ollama: 1024,
 				bedrock: 1024,
 			};
