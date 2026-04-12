@@ -12,6 +12,18 @@ Pair it with `@ragpipe/plugin-ollama` for an all-local workflow.
 pnpm add ragpipe @ragpipe/plugin-sqlite-vec
 ```
 
+If you use `pnpm`, you may also need to approve the native build for `better-sqlite3`:
+
+```bash
+pnpm approve-builds
+```
+
+Approve `better-sqlite3`, then reinstall or rebuild if needed:
+
+```bash
+pnpm rebuild better-sqlite3
+```
+
 ## Usage
 
 ```ts
@@ -99,6 +111,7 @@ This is intentional for the first local MVP. It keeps setup simple and avoids re
 - This plugin is best suited for local development, demos, and smaller datasets.
 - `tableName` and `metaTableName` are validated before being interpolated into SQL.
 - `better-sqlite3` is used under the hood and is loaded at runtime by the plugin.
+- In `pnpm` projects, `better-sqlite3` may require `pnpm approve-builds` before the native binding is available.
 - Dimension metadata is persisted so mismatched embedding models fail fast instead of silently returning bad search results.
 
 ## License

@@ -66,10 +66,23 @@ export function sqliteVectorStore(
 			return database;
 		}
 
-		const instance = new Database(options.path) as SqliteDatabase;
-		instance.pragma("journal_mode = WAL");
-		database = instance;
-		return instance;
+		try {
+			const instance = new Database(options.path) as SqliteDatabase;
+			instance.pragma("journal_mode = WAL");
+			database = instance;
+			return instance;
+		} catch (error) {
+			if (
+				error instanceof Error &&
+				error.message.includes("Could not locate the bindings file")
+			) {
+				throw new Error(
+					"Failed to load better-sqlite3 native bindings. If you use pnpm, run `pnpm approve-builds` and allow `better-sqlite3`, then reinstall or rebuild with `pnpm rebuild better-sqlite3`.",
+				);
+			}
+
+			throw error;
+		}
 	}
 
 	function getRowCount(): number {

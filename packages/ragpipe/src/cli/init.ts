@@ -139,6 +139,7 @@ function generateConfig(
 			lines.push("connectionString: process.env.DATABASE_URL!,");
 		} else if (p.value === "sqlite") {
 			lines.push('path: "./rag.db",');
+			lines.push("// If pnpm blocks native builds, run: pnpm approve-builds");
 		} else if (p.value === "gemini") {
 			lines.push("apiKey: process.env.GEMINI_API_KEY!,");
 		} else if (p.value === "openai") {
@@ -265,14 +266,29 @@ export const initCommand = defineCommand({
 		consola.info(
 			`Required packages: ragpipe, ${Array.from(packages).join(", ")}`,
 		);
-		consola.box(
-			[
-				"Next steps:",
-				`  1. pnpm add ragpipe ${pkgList}`,
-				"  2. npx ragpipe setup        # vector store schema",
-				"  3. npx ragpipe ingest ./docs",
-				'  4. npx ragpipe ask "your question"',
-			].join("\n"),
-		);
+		consola.box(buildNextSteps(vectorStore, pkgList));
 	},
 });
+
+function buildNextSteps(vectorStore: ProviderOption, pkgList: string): string {
+	const steps = [
+		"Next steps:",
+		`  1. pnpm add ragpipe ${pkgList}`,
+		"  2. npx ragpipe setup        # vector store schema",
+		"  3. npx ragpipe ingest ./docs",
+		'  4. npx ragpipe ask "your question"',
+	];
+
+	if (vectorStore.value === "sqlite") {
+		steps.splice(
+			2,
+			0,
+			"  2. pnpm approve-builds      # approve better-sqlite3 if prompted",
+		);
+		steps[3] = "  3. npx ragpipe setup        # create rag.db and schema";
+		steps[4] = "  4. npx ragpipe ingest ./docs";
+		steps[5] = '  5. npx ragpipe ask "your question"';
+	}
+
+	return steps.join("\n");
+}
