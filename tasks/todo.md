@@ -1,5 +1,47 @@
 # Todo
 
+## Step 8 - Plugin Voyage Spec
+
+- [x] Review existing embedding plugin specs and implementation patterns for `@ragpipe/plugin-voyage`
+- [x] Write a dedicated implementation spec for `@ragpipe/plugin-voyage` in `specs/plugin-voyage.md`
+- [x] Review the spec for implementation readiness and verification scope
+
+## Step 8 Review
+
+- Added `specs/plugin-voyage.md` covering scope, API contract, known model defaults, package structure, test coverage, CLI init integration, and verification criteria
+- Expanded `specs/plugin-voyage.md` with staged checkbox lists for scaffolding, implementation, error handling, tests, CLI integration, and verification
+- Aligned the Voyage spec with existing embedding plugin patterns from OpenAI, Gemini, and Cloudflare
+- Kept the MVP intentionally narrow: embedding-only, fetch-based, batch support included, generation excluded
+
+## Step 9 - Plugin Voyage Initial Implementation
+
+- [x] Confirm MVP scope remains embedding-only and excludes generation/rerank
+- [x] Confirm Voyage API request/response shape against the current official docs before implementation
+- [x] Create `packages/plugin-voyage/`
+- [x] Add `package.json`
+- [x] Add `tsconfig.json`
+- [x] Add `tsup.config.ts`
+- [x] Add `src/index.ts`
+- [x] Add `src/embedding.ts`
+- [x] Add `src/__tests__/embedding.test.ts`
+- [x] Add `README.md`
+- [x] Add a changeset for `@ragpipe/plugin-voyage`
+- [x] Add `@ragpipe/plugin-voyage` to `packages/ragpipe/src/cli/init.ts`
+
+## Step 9 Review
+
+- Scaffolded `packages/plugin-voyage/` with standard package metadata and build config
+- Implemented `voyageEmbedding()` with fetch-based single and batch embedding support
+- Added response validation for malformed payloads and empty embedding responses
+- Added unit tests covering defaults, overrides, request payloads, ordering, and error paths
+- Wrote package README with usage, API, supported models, and notes
+- Verified `pnpm --filter @ragpipe/plugin-voyage test`
+- Verified `pnpm --filter @ragpipe/plugin-voyage typecheck`
+- Verified `pnpm --filter @ragpipe/plugin-voyage build`
+- Added `Voyage AI` as an Embedding provider in `packages/ragpipe/src/cli/init.ts`
+- Verified `pnpm --filter ragpipe typecheck`
+- Verified `pnpm --filter ragpipe build`
+
 ## Step 6 - Plugin Sqlite Vec Branch Setup
 
 - [x] Review `specs/rag-kit-spec.md` and current branch conventions for `@ragpipe/plugin-sqlite-vec`
