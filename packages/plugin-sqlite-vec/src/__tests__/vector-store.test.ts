@@ -210,21 +210,15 @@ function getCreatedDatabase(): FakeDatabase {
 	return database;
 }
 
-const mockRequire = vi.fn((id: string) => {
-	if (id !== "better-sqlite3") {
-		throw new Error(`Unexpected module request: ${id}`);
+const MockDatabase = class extends FakeDatabase {
+	constructor(path: string) {
+		super(path);
+		fakeDatabases.push(this);
 	}
+};
 
-	return class MockDatabase extends FakeDatabase {
-		constructor(path: string) {
-			super(path);
-			fakeDatabases.push(this);
-		}
-	};
-});
-
-vi.mock("node:module", () => ({
-	createRequire: vi.fn(() => mockRequire),
+vi.mock("better-sqlite3", () => ({
+	default: MockDatabase,
 }));
 
 describe("sqliteVectorStore", () => {
@@ -240,7 +234,6 @@ describe("sqliteVectorStore", () => {
 
 		await store.isReady?.();
 
-		expect(mockRequire).toHaveBeenCalledWith("better-sqlite3");
 		expect(fakeDatabases[0]?.path).toBe("./rag.db");
 		expect(fakeDatabases[0]?.pragmaCalls).toEqual(["journal_mode = WAL"]);
 	});

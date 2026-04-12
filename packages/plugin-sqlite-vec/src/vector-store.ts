@@ -1,4 +1,4 @@
-import { createRequire } from "node:module";
+import Database from "better-sqlite3";
 import type { SearchResult, VectorStorePlugin } from "ragpipe";
 import {
 	SQLITE_VECTOR_STORE_DEFAULT_META_TABLE,
@@ -16,8 +16,6 @@ import {
 	validateIdentifier,
 } from "./sql.js";
 
-const require = createRequire(`${process.cwd()}/`);
-
 interface SqliteStatement {
 	run(...params: unknown[]): unknown;
 	get<T = Record<string, unknown>>(...params: unknown[]): T | undefined;
@@ -30,8 +28,6 @@ interface SqliteDatabase {
 	exec(source: string): void;
 	close(): void;
 }
-
-type SqliteDatabaseConstructor = new (path: string) => SqliteDatabase;
 
 interface CountRow {
 	count: number;
@@ -53,22 +49,6 @@ export interface SqliteVectorStoreOptions {
 	metaTableName?: string;
 }
 
-function loadDatabaseConstructor(): SqliteDatabaseConstructor {
-	try {
-		return require("better-sqlite3") as SqliteDatabaseConstructor;
-	} catch (error) {
-		if (error instanceof Error) {
-			throw new Error(
-				`Failed to load better-sqlite3. Install it before using @ragpipe/plugin-sqlite-vec: ${error.message}`,
-			);
-		}
-
-		throw new Error(
-			"Failed to load better-sqlite3. Install it before using @ragpipe/plugin-sqlite-vec.",
-		);
-	}
-}
-
 export function sqliteVectorStore(
 	options: SqliteVectorStoreOptions,
 ): VectorStorePlugin {
@@ -86,10 +66,10 @@ export function sqliteVectorStore(
 			return database;
 		}
 
-		const Database = loadDatabaseConstructor();
-		database = new Database(options.path);
-		database.pragma("journal_mode = WAL");
-		return database;
+		const instance = new Database(options.path) as SqliteDatabase;
+		instance.pragma("journal_mode = WAL");
+		database = instance;
+		return instance;
 	}
 
 	function getRowCount(): number {
