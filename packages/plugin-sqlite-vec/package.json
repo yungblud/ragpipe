@@ -1,6 +1,6 @@
 {
 	"name": "@ragpipe/plugin-sqlite-vec",
-	"version": "0.1.0-alpha.2",
+	"version": "0.1.0",
 	"description": "SQLite local vector store plugin for ragpipe",
 	"type": "module",
 	"license": "MIT",
@@ -42,7 +42,7 @@
 	},
 	"keywords": ["ragpipe", "rag", "sqlite", "local", "vector-store", "plugin"],
 	"peerDependencies": {
-		"ragpipe": ">=0.8.0"
+		"ragpipe": ">=0.9.0"
 	},
 	"dependencies": {
 		"better-sqlite3": "^11.10.0"
