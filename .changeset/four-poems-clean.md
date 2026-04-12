@@ -1,5 +1,5 @@
 ---
-"ragpipe": patch
+"ragpipe": minor
 ---
 
 Update `ragpipe init` to support `@ragpipe/plugin-voyage` as an embedding provider.

@@ -51,7 +51,7 @@ https://api.voyageai.com/v1
 
 ```json
 {
-  "model": "voyage-3-lite",
+  "model": "voyage-4-lite",
   "input": "hello world"
 }
 ```
@@ -60,7 +60,7 @@ https://api.voyageai.com/v1
 
 ```json
 {
-  "model": "voyage-3-lite",
+  "model": "voyage-4-lite",
   "input": ["hello", "world"]
 }
 ```
@@ -69,9 +69,9 @@ https://api.voyageai.com/v1
 
 ```json
 {
-  "model": "voyage-3-lite",
+  "model": "voyage-4-lite",
   "input": ["hello", "world"],
-  "dimensions": 512
+  "output_dimension": 512
 }
 ```
 
@@ -92,7 +92,7 @@ https://api.voyageai.com/v1
       "embedding": [0.111, -0.222, 0.333]
     }
   ],
-  "model": "voyage-3-lite"
+  "model": "voyage-4-lite"
 }
 ```
 
@@ -109,9 +109,10 @@ https://api.voyageai.com/v1
 ```ts
 interface VoyageEmbeddingOptions {
   apiKey: string;
-  model?: string;      // default: "voyage-3-lite"
-  dimensions?: number; // optional override
+  model: string;
+  dimensions: number;
   baseUrl?: string;    // default: "https://api.voyageai.com/v1"
+  inputType?: "query" | "document";
 }
 
 function voyageEmbedding(options: VoyageEmbeddingOptions): EmbeddingPlugin;
@@ -122,8 +123,8 @@ function voyageEmbedding(options: VoyageEmbeddingOptions): EmbeddingPlugin;
 | 필드 | 값 |
 |------|----|
 | `name` | `"voyage"` |
-| `model` | options.model ?? `"voyage-3-lite"` |
-| `dimensions` | options.dimensions ?? 모델별 기본값 |
+| `model` | options.model |
+| `dimensions` | options.dimensions |
 | `embed(text)` | 단일 embedding |
 | `embedMany(texts)` | 배치 embedding |
 | `rateLimit` | `{ delayMs: 200 }` |
@@ -132,7 +133,7 @@ function voyageEmbedding(options: VoyageEmbeddingOptions): EmbeddingPlugin;
 
 - OpenAI embedding plugin과 유사한 shape를 따른다
 - SDK 없이 `fetch`만 사용한다
-- 모델별 default dimensions를 제공하되, override가 들어오면 그 값을 plugin metadata와 request body에 반영한다
+- 모델 카탈로그 drift를 피하기 위해 `dimensions`는 caller가 명시한다
 
 ---
 
@@ -142,16 +143,18 @@ MVP에서는 대표 text embedding 모델 중심으로 문서화한다.
 
 | 모델 | 기본 차원 | 상태 | 비고 |
 |------|-----------|------|------|
-| `voyage-3-lite` | 1024 | MVP 기본값 | 비용/성능 균형 |
-| `voyage-3` | 1024 | MVP | 고품질 |
+| `voyage-4-lite` | 1024 | MVP 기본값 | 비용/성능 균형 |
+| `voyage-4` | 1024 | MVP | 고품질 범용 |
+| `voyage-4-nano` | 1024 | MVP | 가장 경량 |
+| `voyage-3.5-lite` | 1024 | compatible | 이전 세대 경량 |
 | `voyage-code-3` | 1024 | MVP | code/search 용도 |
 | `voyage-large-2-instruct` | 1024 | compatible | 레거시/호환 범위 |
 
 정책:
 
-- 기본 차원은 known map으로 관리
-- unknown model이면 fallback dimension은 `1024`
-- 사용자가 `dimensions`를 지정하면 해당 값을 우선한다
+- 모델별 차원은 plugin 내부에서 추론하지 않는다
+- caller가 `model`과 `dimensions`를 함께 명시한다
+- README에는 흔히 쓰는 모델/차원 조합 예시만 제공한다
 
 > 실제 Voyage 모델 카탈로그는 변할 수 있으므로,
 > 구현 단계에서 README에는 "공식 문서 기준"임을 명시하고 과도한 모델 보장은 피한다.
@@ -201,27 +204,27 @@ packages/plugin-voyage/
 
 ### 6.0 Implementation Checklist
 
-- [ ] Confirm MVP scope remains embedding-only and excludes generation/rerank
-- [ ] Confirm Voyage API request/response shape against the current official docs before implementation
-- [ ] Create `packages/plugin-voyage/`
-- [ ] Add `package.json`
-- [ ] Add `tsconfig.json`
-- [ ] Add `tsup.config.ts`
-- [ ] Add `src/index.ts`
-- [ ] Add `src/embedding.ts`
-- [ ] Add `src/__tests__/embedding.test.ts`
-- [ ] Add `README.md`
-- [ ] Add a changeset for `@ragpipe/plugin-voyage`
+- [x] Confirm MVP scope remains embedding-only and excludes generation/rerank
+- [x] Confirm Voyage API request/response shape against the current official docs before implementation
+- [x] Create `packages/plugin-voyage/`
+- [x] Add `package.json`
+- [x] Add `tsconfig.json`
+- [x] Add `tsup.config.ts`
+- [x] Add `src/index.ts`
+- [x] Add `src/embedding.ts`
+- [x] Add `src/__tests__/embedding.test.ts`
+- [x] Add `README.md`
+- [x] Add a changeset for `@ragpipe/plugin-voyage`
 
 ### 6.0.1 Package Scaffolding Checklist
 
-- [ ] Use the same package layout as other embedding plugins
-- [ ] Set `name` to `@ragpipe/plugin-voyage`
-- [ ] Set `peerDependencies.ragpipe`
-- [ ] Keep runtime dependencies empty unless implementation evidence proves one is necessary
-- [ ] Include standard scripts: `build`, `dev`, `typecheck`, `test`, `test:watch`, `test:coverage`
-- [ ] Export ESM/CJS/types from package root
-- [ ] Include `dist` and `README.md` in published files
+- [x] Use the same package layout as other embedding plugins
+- [x] Set `name` to `@ragpipe/plugin-voyage`
+- [x] Set `peerDependencies.ragpipe`
+- [x] Keep runtime dependencies empty unless implementation evidence proves one is necessary
+- [x] Include standard scripts: `build`, `dev`, `typecheck`, `test`, `test:watch`, `test:coverage`
+- [x] Export ESM/CJS/types from package root
+- [x] Include `dist` and `README.md` in published files
 
 ### 6.1 `embedding.ts`
 
@@ -232,32 +235,28 @@ import type { EmbeddingPlugin } from "ragpipe";
 
 export interface VoyageEmbeddingOptions {
   apiKey: string;
-  model?: string;
-  dimensions?: number;
+  model: string;
+  dimensions: number;
   baseUrl?: string;
+  inputType?: "query" | "document";
 }
-
-const DEFAULT_MODEL = "voyage-3-lite";
-
-const DIMENSION_MAP: Record<string, number> = {
-  "voyage-3-lite": 1024,
-  "voyage-3": 1024,
-  "voyage-code-3": 1024,
-  "voyage-large-2-instruct": 1024,
-};
 
 export function voyageEmbedding(
   options: VoyageEmbeddingOptions,
 ): EmbeddingPlugin {
-  const model = options.model ?? DEFAULT_MODEL;
+  const model = options.model;
   const baseUrl = options.baseUrl ?? "https://api.voyageai.com/v1";
-  const dimensions = options.dimensions ?? DIMENSION_MAP[model] ?? 1024;
+  const dimensions = options.dimensions;
 
   async function callApi(input: string | string[]): Promise<number[][]> {
-    const body: Record<string, unknown> = { model, input };
+    const body: Record<string, unknown> = {
+      model,
+      input,
+      output_dimension: options.dimensions,
+    };
 
-    if (options.dimensions) {
-      body.dimensions = options.dimensions;
+    if (options.inputType) {
+      body.input_type = options.inputType;
     }
 
     const res = await fetch(`${baseUrl}/embeddings`, {
@@ -306,27 +305,28 @@ export type { VoyageEmbeddingOptions } from "./embedding.js";
 
 ### 6.3 Embedding Implementation Checklist
 
-- [ ] Define `VoyageEmbeddingOptions`
-- [ ] Define `DEFAULT_MODEL = "voyage-3-lite"`
-- [ ] Define known `DIMENSION_MAP`
-- [ ] Resolve `model`, `baseUrl`, and `dimensions` defaults
-- [ ] Implement shared `callApi(input)` helper for single/batch requests
-- [ ] Send `Authorization: Bearer ${apiKey}` header
-- [ ] Send `Content-Type: application/json` header
-- [ ] Include `dimensions` in request body only when explicitly configured
-- [ ] Sort returned embeddings by `index`
-- [ ] Return the first vector from `embed()`
-- [ ] Return all vectors from `embedMany()`
-- [ ] Return `[]` immediately from `embedMany([])` without calling the API
-- [ ] Set plugin metadata: `name`, `model`, `dimensions`, `rateLimit`
+- [x] Define `VoyageEmbeddingOptions`
+- [x] Require `model` in `VoyageEmbeddingOptions`
+- [x] Require `dimensions` in `VoyageEmbeddingOptions`
+- [x] Remove `DIMENSION_MAP` and model-based default inference
+- [x] Resolve `model`, `baseUrl`, and `dimensions` directly from options
+- [x] Implement shared `callApi(input)` helper for single/batch requests
+- [x] Send `Authorization: Bearer ${apiKey}` header
+- [x] Send `Content-Type: application/json` header
+- [x] Include `output_dimension` in every request
+- [x] Sort returned embeddings by `index`
+- [x] Return the first vector from `embed()`
+- [x] Return all vectors from `embedMany()`
+- [x] Return `[]` immediately from `embedMany([])` without calling the API
+- [x] Set plugin metadata: `name`, `model`, `dimensions`, `rateLimit`
 
 ### 6.4 Response Validation Checklist
 
-- [ ] Validate that JSON payload contains a `data` array
-- [ ] Validate that each item has numeric `index` and `embedding`
-- [ ] Throw a stable error for malformed payloads
-- [ ] Throw a stable error when no embeddings are returned for single input
-- [ ] Avoid silently accepting invalid or partial responses
+- [x] Validate that JSON payload contains a `data` array
+- [x] Validate that each item has numeric `index` and `embedding`
+- [x] Throw a stable error for malformed payloads
+- [x] Throw a stable error when no embeddings are returned for single input
+- [x] Avoid silently accepting invalid or partial responses
 
 ---
 
@@ -349,11 +349,11 @@ export type { VoyageEmbeddingOptions } from "./embedding.js";
 
 ### 7.1 Error Handling Checklist
 
-- [ ] Preserve HTTP status code in thrown errors
-- [ ] Include response text for non-OK responses
-- [ ] Use `Voyage embedding error:` prefix consistently
-- [ ] Throw a clear invalid-payload error when `data` is missing or malformed
-- [ ] Throw a clear no-embeddings error when response data is empty in single-input flow
+- [x] Preserve HTTP status code in thrown errors
+- [x] Include response text for non-OK responses
+- [x] Use `Voyage embedding error:` prefix consistently
+- [x] Throw a clear invalid-payload error when `data` is missing or malformed
+- [x] Throw a clear no-embeddings error when response data is empty in single-input flow
 
 ---
 
@@ -364,16 +364,16 @@ export type { VoyageEmbeddingOptions } from "./embedding.js";
 ### 생성/메타데이터
 
 - `name === "voyage"`
-- default model = `voyage-3-lite`
-- default dimensions = known map
-- custom `dimensions` override 반영
+- explicit model is required
+- explicit dimensions are required
+- provided `dimensions` reflected in metadata
 - custom `baseUrl` 반영
 
 ### API 호출
 
 - `embed()`가 `/embeddings`에 단일 string payload 전송
 - `embedMany()`가 string 배열 payload 전송
-- `dimensions` 지정 시 request body에 포함
+- `output_dimension`이 request body에 항상 포함
 - Authorization header에 Bearer token 포함
 - response `index` 기준 정렬
 
@@ -391,21 +391,20 @@ export type { VoyageEmbeddingOptions } from "./embedding.js";
 
 ### 8.1 Test Implementation Checklist
 
-- [ ] Assert plugin metadata defaults
-- [ ] Assert custom model override
-- [ ] Assert custom dimensions override
-- [ ] Assert custom base URL override
-- [ ] Assert single `embed()` request body
-- [ ] Assert batch `embedMany()` request body
-- [ ] Assert Authorization header
-- [ ] Assert dimensions omission when not provided
-- [ ] Assert dimensions inclusion when provided
-- [ ] Assert response sorting by `index`
-- [ ] Assert `embedMany([])` short-circuits without fetch
-- [ ] Assert non-OK HTTP error propagation
-- [ ] Assert invalid JSON payload error
-- [ ] Assert empty data error
-- [ ] Assert malformed item structure error
+- [x] Assert plugin metadata
+- [x] Assert custom model override
+- [x] Assert custom dimensions override
+- [x] Assert custom base URL override
+- [x] Assert single `embed()` request body
+- [x] Assert batch `embedMany()` request body
+- [x] Assert Authorization header
+- [x] Assert output_dimension inclusion in every request
+- [x] Assert response sorting by `index`
+- [x] Assert `embedMany([])` short-circuits without fetch
+- [x] Assert non-OK HTTP error propagation
+- [x] Assert invalid JSON payload error
+- [x] Assert empty data error
+- [x] Assert malformed item structure error
 
 ---
 
@@ -429,7 +428,7 @@ import { voyageEmbedding } from "@ragpipe/plugin-voyage";
 export default defineConfig({
   embedding: voyageEmbedding({
     apiKey: process.env.VOYAGE_API_KEY!,
-    model: "voyage-3-lite",
+    model: "voyage-4-lite",
     dimensions: 1024,
   }),
   // vectorStore, generation ...
@@ -452,7 +451,7 @@ export default defineConfig({
 ```ts
 embedding: voyageEmbedding({
   apiKey: process.env.VOYAGE_API_KEY!,
-  model: "voyage-3-lite",
+  model: "voyage-4-lite",
   dimensions: 1024,
 })
 ```
@@ -461,13 +460,13 @@ Generation axis는 Voyage와 직접 연결되지 않으므로 기존 provider �
 
 ### 10.1 CLI Integration Checklist
 
-- [ ] Add `Voyage AI` to `EMBEDDING_PROVIDERS`
-- [ ] Use package `@ragpipe/plugin-voyage`
-- [ ] Use import name `voyageEmbedding`
-- [ ] Generate `apiKey: process.env.VOYAGE_API_KEY!`
-- [ ] Generate `model: "voyage-3-lite"`
-- [ ] Generate `dimensions: 1024`
-- [ ] Verify `ragpipe init` output remains valid TypeScript
+- [x] Add `Voyage AI` to `EMBEDDING_PROVIDERS`
+- [x] Use package `@ragpipe/plugin-voyage`
+- [x] Use import name `voyageEmbedding`
+- [x] Generate `apiKey: process.env.VOYAGE_API_KEY!`
+- [x] Generate `model: "voyage-4-lite"`
+- [x] Generate `dimensions: 1024`
+- [x] Verify `ragpipe init` output remains valid TypeScript
 
 ---
 
@@ -484,14 +483,14 @@ Generation axis는 Voyage와 직접 연결되지 않으므로 기존 provider �
 
 ### 11.1 Verification Checklist
 
-- [ ] `pnpm --filter @ragpipe/plugin-voyage test`
-- [ ] `pnpm --filter @ragpipe/plugin-voyage typecheck`
-- [ ] `pnpm --filter @ragpipe/plugin-voyage build`
-- [ ] `pnpm --filter ragpipe typecheck`
-- [ ] `pnpm --filter ragpipe build`
-- [ ] Review generated `ragpipe.config.ts` for Voyage option correctness
-- [ ] Review README for install and usage accuracy
-- [ ] Add implementation summary to `tasks/todo.md`
+- [x] `pnpm --filter @ragpipe/plugin-voyage test`
+- [x] `pnpm --filter @ragpipe/plugin-voyage typecheck`
+- [x] `pnpm --filter @ragpipe/plugin-voyage build`
+- [x] `pnpm --filter ragpipe typecheck`
+- [x] `pnpm --filter ragpipe build`
+- [x] Review generated `ragpipe.config.ts` for Voyage option correctness
+- [x] Review README for install and usage accuracy
+- [x] Add implementation summary to `tasks/todo.md`
 
 ---
 
