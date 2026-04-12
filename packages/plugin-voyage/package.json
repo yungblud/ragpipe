@@ -1,0 +1,53 @@
+{
+	"name": "@ragpipe/plugin-voyage",
+	"version": "0.0.1",
+	"description": "Voyage AI embedding plugin for ragpipe",
+	"type": "module",
+	"license": "MIT",
+	"author": {
+		"name": "yungblud",
+		"url": "https://github.com/yungblud"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/yungblud/ragpipe",
+		"directory": "packages/plugin-voyage"
+	},
+	"bugs": {
+		"url": "https://github.com/yungblud/ragpipe/issues"
+	},
+	"homepage": "https://github.com/yungblud/ragpipe#readme",
+	"publishConfig": {
+		"registry": "https://registry.npmjs.org/",
+		"access": "public"
+	},
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.js",
+			"require": "./dist/index.cjs"
+		}
+	},
+	"main": "./dist/index.cjs",
+	"module": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"files": ["dist", "README.md"],
+	"scripts": {
+		"build": "tsup",
+		"dev": "tsup --watch",
+		"typecheck": "tsc --noEmit",
+		"test": "vitest run",
+		"test:watch": "vitest",
+		"test:coverage": "vitest run --coverage"
+	},
+	"keywords": ["ragpipe", "rag", "voyage", "embedding", "vector", "plugin"],
+	"peerDependencies": {
+		"ragpipe": ">=0.9.0"
+	},
+	"devDependencies": {
+		"ragpipe": "workspace:*",
+		"tsup": "^8.4.0",
+		"typescript": "^5.8.3",
+		"vitest": "^3.1.1"
+	}
+}
