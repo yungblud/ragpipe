@@ -1,5 +1,13 @@
 # ragpipe
 
+## 0.10.0
+
+### Minor Changes
+
+- [#23](https://github.com/yungblud/ragpipe/pull/23) [`eaf423b`](https://github.com/yungblud/ragpipe/commit/eaf423b83498a61f327043f338d02bf6f975d672) Thanks [@yungblud](https://github.com/yungblud)! - Update `ragpipe init` to support `@ragpipe/plugin-voyage` as an embedding provider.
+
+  The generated config now includes `voyageEmbedding()` with `VOYAGE_API_KEY`, `model`, and required `dimensions` values.
+
 ## 0.9.0
 
 ### Minor Changes
