@@ -135,8 +135,8 @@ const { answer, sources } = await rag.ask("How does authentication work?");
 | Provider | Package | Status |
 |----------|---------|--------|
 | Supabase (pgvector) | `@ragpipe/plugin-supabase` | stable |
-| PostgreSQL (pgvector) | `@ragpipe/plugin-pgvector` | planned |
-| SQLite (sqlite-vec) | `@ragpipe/plugin-sqlite-vec` | planned |
+| PostgreSQL (pgvector) | `@ragpipe/plugin-pgvector` | stable |
+| SQLite (sqlite-vec) | `@ragpipe/plugin-sqlite-vec` | stable |
 
 ### Generation
 
