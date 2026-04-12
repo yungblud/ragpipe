@@ -1,5 +1,18 @@
 # Todo
 
+## Step 8 - Plugin Voyage Spec
+
+- [x] Review existing embedding plugin specs and implementation patterns for `@ragpipe/plugin-voyage`
+- [x] Write a dedicated implementation spec for `@ragpipe/plugin-voyage` in `specs/plugin-voyage.md`
+- [x] Review the spec for implementation readiness and verification scope
+
+## Step 8 Review
+
+- Added `specs/plugin-voyage.md` covering scope, API contract, known model defaults, package structure, test coverage, CLI init integration, and verification criteria
+- Expanded `specs/plugin-voyage.md` with staged checkbox lists for scaffolding, implementation, error handling, tests, CLI integration, and verification
+- Aligned the Voyage spec with existing embedding plugin patterns from OpenAI, Gemini, and Cloudflare
+- Kept the MVP intentionally narrow: embedding-only, fetch-based, batch support included, generation excluded
+
 ## Step 6 - Plugin Sqlite Vec Branch Setup
 
 - [x] Review `specs/rag-kit-spec.md` and current branch conventions for `@ragpipe/plugin-sqlite-vec`
